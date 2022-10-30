@@ -1,70 +1,142 @@
 package com.nttd.wtdoodle.Client.Game.Player;
 
+import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 
 import java.io.*;
 import java.net.Socket;
 
 public class PtoSBridge {
     private Socket socket;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
+
+    private boolean drawer;
+    private boolean guesser;
+
+    private int playerID;
+
     public PtoSBridge(Socket socket){
         try {
             this.socket = socket;
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.flush();
+            this.ois = new ObjectInputStream(socket.getInputStream());
+            Message m = (Message) ois.readObject();
+            if(m.getType() == Message.type.setID){
+                playerID = m.getID();
+                System.out.println("Player #"+playerID);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error sending Message to client");
-            closeEverything(socket,bufferedWriter,bufferedReader);
+            closeEverything(socket,oos,ois);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void sendMessageToServer(String message) {
+    public void sendMessageToServer(Message message) {
         try{
-            bufferedWriter.write(message);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            oos.writeObject(message);
+            oos.flush();
         }catch (IOException e){
             e.printStackTrace();
             System.out.println("Error sending Message to client");
-            closeEverything(socket,bufferedWriter,bufferedReader);
+            closeEverything(socket,oos,ois);
         }
     }
 
-    public void receiveMessagesFromServer(GraphicsContext g) {
+    public void receiveMessagesFromServer(GraphicsContext g,AnchorPane ap_main,VBox vBox) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while(socket.isConnected()){
                     try {
-                        String messageFromServer = bufferedReader.readLine();
-                        Player.decodeMessage(messageFromServer,g);
+                        Message m = (Message) ois.readObject();
+                        decodeMessage(m,g,ap_main,vBox);
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.out.println("Error sending Message to client");
-                        closeEverything(socket,bufferedWriter,bufferedReader);
+                        closeEverything(socket,oos,ois);
                         break;
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
         }).start();
     }
 
-    public void closeEverything(Socket socket, BufferedWriter bufferedWriter , BufferedReader bufferedReader){
+    public void decodeMessage(Message m, GraphicsContext g , AnchorPane ap_main , VBox vBox) {
+        if(m.getType() == Message.type.penPosition){
+            Player.drawOnCanvas(m.getPen(),g);
+        }
+        if(m.getType() == Message.type.setDrawer){
+            if(m.getID() == playerID){
+                Player.addLabel("You are the new drawer",vBox);
+                drawer = true;
+                guesser = false;
+            }
+            else{
+                Player.addLabel("Player " + m.getID() + " is the new drawer .",vBox);
+                guesser = true;
+                drawer = false;
+            }
+        }
+        if(m.getType() == Message.type.setID){
+            playerID = m.getID();
+        }
+        if(m.getType() == Message.type.wordSelection){
+            if(m.getID() == playerID){
+                Player.showWordSelectionButtons(m.getMessage(),ap_main);
+            }
+            else{
+                Player.addLabel("Drawer is selecting a word .",vBox);
+            }
+        }
+        if(m.getType() == Message.type.general){
+            Player.addLabel(m.getMessage(),vBox);
+        }
+        if(m.getType() == Message.type.successfully_guessed){
+            if(m.getID()==playerID){
+                Player.addLabel("Hurray! You guessed it.",vBox);
+            }
+            else{
+                Player.addLabel(m.getMessage(),vBox);
+            }
+        }
+        if(m.getType() == Message.type.guess){
+            if(m.getID() != playerID){
+                Player.addLabel("Player " + m.getID() + " has guessed " + m.getMessage(),vBox);
+            }
+        }
+    }
+    public void closeEverything(Socket socket, ObjectOutputStream oos , ObjectInputStream ois){
         try {
             if (socket != null) {
                 socket.close();
             }
-            if (bufferedReader != null) {
-                bufferedReader.close();
+            if (ois != null) {
+                ois.close();
             }
-            if (bufferedWriter != null) {
-                bufferedWriter.close();
+            if (oos != null) {
+                oos.close();
             }
         }catch (IOException e){
             e.printStackTrace();
         }
     }
+
+    public boolean isDrawer() {
+        return drawer;
+    }
+
+    public int getPlayerID(){
+        return playerID;
+    }
+
+    public boolean isGuesser(){ return guesser; }
 }

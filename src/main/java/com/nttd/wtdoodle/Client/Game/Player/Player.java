@@ -1,18 +1,30 @@
 package com.nttd.wtdoodle.Client.Game.Player;
 
+import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
+import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
+import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 import com.nttd.wtdoodle.ResourceLocator;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -23,23 +35,69 @@ import java.util.ResourceBundle;
 public class Player extends Application implements Initializable {
 
     public Canvas canvas;
-    public boolean drawer = false;
     public ColorPicker colorPicker;
     public CheckBox eraser;
     public TextField brushSize;
+    public AnchorPane ap_main;
+    public Button bt_guess;
+    public TextField tf_guess;
+    public VBox vb_message;
+    public ScrollPane sp_message;
     GraphicsContext g;
-    PtoSBridge ptoSBridge;
+    static PtoSBridge ptoSBridge;
 
-    public static void decodeMessage(String messageFromServer, GraphicsContext g) {
-        String []GameData = messageFromServer.split(" ");
-        if(GameData[0].equals("0")){
-            drawOnCanvas(GameData,g);
-        }
-        else{
-            System.out.println("Add Label");
-        }
+    public static void showWordSelectionButtons(String message, AnchorPane ap_main) {
+        String[] threeWords = message.split(",");
+        Button bt1 = new Button();
+        bt1.setId("chooseButton1");
+        bt1.setLayoutX(211);
+        bt1.setLayoutY(108);
+        bt1.setText(threeWords[0]);
+        bt1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[0]));
+                ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
+                ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
+                ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
+            }
+        });
+        Button bt2 = new Button();
+        bt2.setId("chooseButton2");
+        bt2.setLayoutX(211);
+        bt2.setLayoutY(229);
+        bt2.setText(threeWords[1]);
+        bt2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[1]));
+                ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
+                ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
+                ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
+            }
+        });
+        Button bt3 = new Button();
+        bt3.setId("chooseButton3");
+        bt3.setLayoutX(211);
+        bt3.setLayoutY(351);
+        bt3.setText(threeWords[2]);
+        bt3.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[2]));
+                ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
+                ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
+                ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
+            }
+        });
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ap_main.getChildren().addAll(bt1, bt2, bt3);
+            }
+        });
     }
-
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Player.fxml"));
@@ -53,23 +111,45 @@ public class Player extends Application implements Initializable {
         launch();
     }
 
-    public static void drawOnCanvas(String []Gamedata , GraphicsContext g){
-        double x = Double.parseDouble(Gamedata[1]);
-        double y = Double.parseDouble(Gamedata[2]);
-        double size = Double.parseDouble(Gamedata[4]);
-        int erase = Integer.parseInt(Gamedata[3]);
-        if(erase == 0){
-            double red = Double.parseDouble(Gamedata[5]);
-            double green = Double.parseDouble(Gamedata[6]);
-            double blue = Double.parseDouble(Gamedata[7]);
+    public static void drawOnCanvas(PenInfo p , GraphicsContext g){
+        double x = p.getX();
+        double y = p.getY();
+        double size = p.getSize();
+        boolean erase = p.isErase();
+        PenColor color = p.getColor();
+        double [] colorA = color.getColor();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(!erase){
+                    g.setFill(Color.color(colorA[0],colorA[1],colorA[2]));
+                    g.fillOval(x , y , size , size);
+                }
+                else{
+                    g.clearRect(x , y , size , size);
+                }
+            }
+        });
+    }
 
-            g.setFill(Color.color(red , green , blue));
-            g.fillOval(x , y , size , size);
+    public static void addLabel(String message , VBox vb_message){
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        hBox.setPadding(new Insets(5,5,5,10));
 
-        }
-        else{
-            g.clearRect(x , y , size , size);
-        }
+        Text text = new Text(message);
+        TextFlow textFlow = new TextFlow(text);
+
+        textFlow.setStyle("-fx-background-color: rgb(233,233,255);" +
+                "-fx-background-radius: 15px;");
+        textFlow.setPadding(new Insets(5,10,5,10));
+        hBox.getChildren().add(textFlow);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                vb_message.getChildren().add(hBox);
+            }
+        });
     }
 
     @Override
@@ -81,29 +161,62 @@ public class Player extends Application implements Initializable {
         }
 
         g = canvas.getGraphicsContext2D();
+        ptoSBridge.receiveMessagesFromServer(g,ap_main,vb_message);
 
-        if(drawer){
-            canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
+        vb_message.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                sp_message.setVvalue((Double)t1);
+            }
+        });
+
+        canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (ptoSBridge.isDrawer()) {
                     double size = Integer.parseInt(brushSize.getText());
                     double x = mouseEvent.getX() - size / 2;
                     double y = mouseEvent.getY() - size / 2;
-                    if(!eraser.isSelected()) {
-                        g.setFill(colorPicker.getValue());
+                    Color c = colorPicker.getValue();
+                    PenColor pc = new PenColor(c.getRed(), c.getGreen(), c.getBlue());
+                    if (!eraser.isSelected()) {
+                        g.setFill(c);
                         g.fillOval(x, y, size, size);
-                        Color c = colorPicker.getValue();
-                        String color = c.getRed()+" "+c.getGreen()+" "+c.getBlue();
-                        ptoSBridge.sendMessageToServer("0 " + x + " " + y + " 0" + " " + size + " " + color);
-                    }else{
-                        g.clearRect(x,y,size,size);
-                        ptoSBridge.sendMessageToServer("0 " + x + " " + y + " 1" + " " + size);
+                        PenInfo p = new PenInfo(x, y, size, false, pc);
+                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, p));
+                    } else {
+                        g.clearRect(x, y, size, size);
+                        PenInfo p = new PenInfo(x, y, size, true, pc);
+                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, p));
                     }
                 }
-            });
-        }
-        else{
-            ptoSBridge.receiveMessagesFromServer(g);
-        }
+            }
+        });
+        bt_guess.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if(ptoSBridge.isGuesser()){
+                    String guess = tf_guess.getText();
+                    if(!guess.isEmpty()){
+                        HBox hBox = new HBox();
+                        hBox.setAlignment(Pos.CENTER_RIGHT);
+                        hBox.setPadding(new Insets(5,5,5,10));
+
+                        Text text = new Text(guess);
+                        TextFlow textFlow = new TextFlow(text);
+
+                        textFlow.setStyle("-fx-color: rgb(239,242,255);" +
+                                          "-fx-background-color: rgb(15,125,242);" +
+                                          "-fx-background-radius: 15px;");
+                        textFlow.setPadding(new Insets(5,10,5,10));
+                        text.setFill(Color.color(0.934,0.945,0.996));
+
+                        hBox.getChildren().add(textFlow);
+                        vb_message.getChildren().add(hBox);
+                        ptoSBridge.sendMessageToServer(new Message(Message.type.guess,ptoSBridge.getPlayerID(),"Client" ,guess));
+                    }
+                }
+            }
+        });
     }
 }

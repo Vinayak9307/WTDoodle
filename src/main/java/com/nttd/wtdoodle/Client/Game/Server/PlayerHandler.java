@@ -1,30 +1,33 @@
 package com.nttd.wtdoodle.Client.Game.Server;
 
+import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
+
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class PlayerHandler implements Runnable {
     Socket player;
-    final int id;
+    ObjectInputStream ois;
+    ObjectOutputStream oos;
 
-    static int count = 0;
 
-    BufferedWriter bufferedWriter;
-    BufferedReader bufferedReader;
-    static ArrayList<PlayerHandler> players = new ArrayList<>();
+    int playerID;
 
-    public PlayerHandler(Socket socket){
+    GameServer game;
+
+    public PlayerHandler(Socket socket , int playerID , GameServer game){
         this.player = socket;
-        this.id = count++;
-        players.add(this);
+        this.playerID = playerID;
+        this.game = game;
         try {
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.ois = new ObjectInputStream(socket.getInputStream());
+            this.oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(new Message(Message.type.setID,playerID));
+            oos.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println((id+1)+"Client is connected to Handler .");
+        System.out.println(playerID + " connected to the server .");
     }
 
 
@@ -39,35 +42,54 @@ public class PlayerHandler implements Runnable {
             public void run() {
                 while(player.isConnected()){
                     try {
-                        String messageFromClient = bufferedReader.readLine();
-                        for(PlayerHandler client : players){
-                            if(client.equals(me)) continue;
-                            sendMessageToClient(messageFromClient,client);
+                        Message m = (Message) ois.readObject();
+                        decodeMessage(m);
+                        if(m.getType() != Message.type.guess){
+                            for(PlayerHandler client : game.getPlayers()){
+                                if(client.equals(me)) continue;
+                                sendMessageToClient(m,client);
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.out.println("Error sending Message to client");
-                        closeEverything(player,bufferedWriter,bufferedReader);
+                        closeEverything(player,oos,ois);
                         break;
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
         }).start();
     }
 
-    public void sendMessageToClient(String message , PlayerHandler client) {
-        try {
-            client.bufferedWriter.write(message);
-            client.bufferedWriter.newLine();
-            client.bufferedWriter.flush();
-        }catch (IOException e){
-            e.printStackTrace();
-            System.out.println("Error sending Message to client");
-            closeEverything(this.player,bufferedWriter,bufferedReader);
+    private void decodeMessage(Message m) {
+        if(m.getType() == Message.type.setCurrentWord){
+            game.setCurrentWordSelected(true);
+            game.setCurrentWord(m.getMessage());
+        }
+        if(m.getType() == Message.type.guess){
+            if(game.getCurrentWord().equals(m.getMessage())){
+                game.sendMessageToAll(new Message(Message.type.successfully_guessed , m.getID() , "Server","Player " + m.getID() + " has guessed the word correctly ."));
+                System.out.println("Player #" + m.getID() + " has guessed the word correctly .");
+            }
+            else{
+                game.sendMessageToAll(new Message(Message.type.guess , m.getID() , "" , m.getMessage()));
+            }
         }
     }
 
-    public void closeEverything(Socket socket, BufferedWriter bufferedWriter , BufferedReader bufferedReader){
+    public static void sendMessageToClient(Message message , PlayerHandler client) {
+        try {
+            client.oos.writeObject(message);
+            client.oos.flush();
+        }catch (IOException e){
+            e.printStackTrace();
+            System.out.println("Error sending Message to client");
+        }
+    }
+
+    public void closeEverything(Socket socket, ObjectOutputStream bufferedWriter , ObjectInputStream bufferedReader){
         try {
             if (socket != null) {
                 socket.close();
@@ -81,5 +103,10 @@ public class PlayerHandler implements Runnable {
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+
+    public int getPlayerID() {
+        return playerID;
     }
 }

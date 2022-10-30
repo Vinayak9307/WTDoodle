@@ -13,14 +13,18 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Game.Player.Player">
+<?import javafx.scene.layout.VBox?>
+<AnchorPane fx:id="ap_main" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Game.Player.Player">
    <ImageView fitHeight="500.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@GameBack.png" />
    </ImageView>
    <Line endX="500.0" endY="500.0" startX="500.0" />
-   <TextField layoutX="527.0" layoutY="463.0" />
-   <Button layoutX="715.0" layoutY="463.0" mnemonicParsing="false" text="Guess" />
-   <ScrollPane layoutX="527.0" layoutY="28.0" prefHeight="425.0" prefWidth="244.0" />
+   <TextField fx:id="tf_guess" layoutX="527.0" layoutY="463.0" />
+   <Button fx:id="bt_guess" layoutX="715.0" layoutY="463.0" mnemonicParsing="false" text="Guess" />
+   <ScrollPane fx:id="sp_message" layoutX="527.0" layoutY="28.0" prefHeight="425.0" prefWidth="244.0">
+      <VBox fx:id="vb_message" prefWidth="242.0" prefHeight="423.0"/>
+   </ScrollPane>
+
    <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#fafdff" height="452.0" layoutX="24.0" layoutY="28.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" width="449.0" />
    <Canvas fx:id="canvas" focusTraversable="true" height="452.0" layoutX="24.0" layoutY="24.0" width="449.0" />
    <ColorPicker fx:id="colorPicker" layoutX="41.0" layoutY="441.0" />
