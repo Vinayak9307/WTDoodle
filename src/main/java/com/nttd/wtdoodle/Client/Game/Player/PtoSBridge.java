@@ -2,6 +2,7 @@ package com.nttd.wtdoodle.Client.Game.Player;
 
 import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -12,10 +13,8 @@ public class PtoSBridge {
     private Socket socket;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-
     private boolean drawer;
     private boolean guesser;
-
     private int playerID;
 
     public PtoSBridge(Socket socket){
@@ -37,7 +36,6 @@ public class PtoSBridge {
             throw new RuntimeException(e);
         }
     }
-
     public void sendMessageToServer(Message message) {
         try{
             oos.writeObject(message);
@@ -48,7 +46,6 @@ public class PtoSBridge {
             closeEverything(socket,oos,ois);
         }
     }
-
     public void receiveMessagesFromServer(GraphicsContext g,AnchorPane ap_main,VBox vBox) {
         new Thread(new Runnable() {
             @Override
@@ -69,7 +66,6 @@ public class PtoSBridge {
             }
         }).start();
     }
-
     public void decodeMessage(Message m, GraphicsContext g , AnchorPane ap_main , VBox vBox) {
         if(m.getType() == Message.type.penPosition){
             Player.drawOnCanvas(m.getPen(),g);
@@ -100,9 +96,10 @@ public class PtoSBridge {
         if(m.getType() == Message.type.general){
             Player.addLabel(m.getMessage(),vBox);
         }
-        if(m.getType() == Message.type.successfully_guessed){
+        if(m.getType() == Message.type.successfullyGuessed){
             if(m.getID()==playerID){
                 Player.addLabel("Hurray! You guessed it.",vBox);
+                guesser = false;
             }
             else{
                 Player.addLabel(m.getMessage(),vBox);
@@ -112,6 +109,10 @@ public class PtoSBridge {
             if(m.getID() != playerID){
                 Player.addLabel("Player " + m.getID() + " has guessed " + m.getMessage(),vBox);
             }
+        }
+        if(m.getType() == Message.type.updateTimer){
+            Label label = (Label) ap_main.lookup("#l_timer");
+            Player.setTimer(m.getMessage(),label);
         }
     }
     public void closeEverything(Socket socket, ObjectOutputStream oos , ObjectInputStream ois){
@@ -129,14 +130,11 @@ public class PtoSBridge {
             e.printStackTrace();
         }
     }
-
     public boolean isDrawer() {
         return drawer;
     }
-
     public int getPlayerID(){
         return playerID;
     }
-
     public boolean isGuesser(){ return guesser; }
 }

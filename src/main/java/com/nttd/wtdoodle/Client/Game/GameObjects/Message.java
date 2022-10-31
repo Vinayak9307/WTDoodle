@@ -12,7 +12,8 @@ public class Message implements Serializable {
         wordSelection,
         setCurrentWord,
         general,
-        successfully_guessed
+        successfullyGuessed,
+        updateTimer
     }
     private int ID;
     private String name;

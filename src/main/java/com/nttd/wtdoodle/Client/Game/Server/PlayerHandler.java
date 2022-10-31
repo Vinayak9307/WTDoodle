@@ -9,8 +9,6 @@ public class PlayerHandler implements Runnable {
     Socket player;
     ObjectInputStream ois;
     ObjectOutputStream oos;
-
-
     int playerID;
 
     GameServer game;
@@ -29,8 +27,6 @@ public class PlayerHandler implements Runnable {
         }
         System.out.println(playerID + " connected to the server .");
     }
-
-
     @Override
     public void run() {
         receiveMessageFromClient(this);
@@ -70,7 +66,7 @@ public class PlayerHandler implements Runnable {
         }
         if(m.getType() == Message.type.guess){
             if(game.getCurrentWord().equals(m.getMessage())){
-                game.sendMessageToAll(new Message(Message.type.successfully_guessed , m.getID() , "Server","Player " + m.getID() + " has guessed the word correctly ."));
+                game.sendMessageToAll(new Message(Message.type.successfullyGuessed , m.getID() , "Server","Player " + m.getID() + " has guessed the word correctly ."));
                 System.out.println("Player #" + m.getID() + " has guessed the word correctly .");
             }
             else{
@@ -78,7 +74,6 @@ public class PlayerHandler implements Runnable {
             }
         }
     }
-
     public static void sendMessageToClient(Message message , PlayerHandler client) {
         try {
             client.oos.writeObject(message);
@@ -88,7 +83,6 @@ public class PlayerHandler implements Runnable {
             System.out.println("Error sending Message to client");
         }
     }
-
     public void closeEverything(Socket socket, ObjectOutputStream bufferedWriter , ObjectInputStream bufferedReader){
         try {
             if (socket != null) {
@@ -104,8 +98,6 @@ public class PlayerHandler implements Runnable {
             e.printStackTrace();
         }
     }
-
-
     public int getPlayerID() {
         return playerID;
     }

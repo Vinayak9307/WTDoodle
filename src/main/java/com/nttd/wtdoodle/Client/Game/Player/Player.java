@@ -43,6 +43,8 @@ public class Player extends Application implements Initializable {
     public TextField tf_guess;
     public VBox vb_message;
     public ScrollPane sp_message;
+    public Label l_timer;
+    public Button bt_clear;
     GraphicsContext g;
     static PtoSBridge ptoSBridge;
 
@@ -152,6 +154,14 @@ public class Player extends Application implements Initializable {
         });
     }
 
+    public static void setTimer(String remainingTime , Label label){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                label.setText(remainingTime);
+            }
+        });
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -197,6 +207,7 @@ public class Player extends Application implements Initializable {
             public void handle(ActionEvent actionEvent) {
                 if(ptoSBridge.isGuesser()){
                     String guess = tf_guess.getText();
+                    tf_guess.setText("");
                     if(!guess.isEmpty()){
                         HBox hBox = new HBox();
                         hBox.setAlignment(Pos.CENTER_RIGHT);
@@ -215,6 +226,16 @@ public class Player extends Application implements Initializable {
                         vb_message.getChildren().add(hBox);
                         ptoSBridge.sendMessageToServer(new Message(Message.type.guess,ptoSBridge.getPlayerID(),"Client" ,guess));
                     }
+                }
+            }
+        });
+        bt_clear.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if(ptoSBridge.isDrawer()){
+                    g.clearRect(0, 0, 500, 500);
+                    PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
+                    ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, p));
                 }
             }
         });
