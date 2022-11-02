@@ -45,8 +45,9 @@ public class WordGenerator {
     }
 
 //    public static void main(String[] args) {
-//        WordGenerator w = new WordGenerator();
-//        System.out.println(w.getThreeRandomWords());
+//        PenInfo p = new PenInfo(1,2,3,true,new PenColor(1,2,3));
+//        Message m = new Message(Message.type.general,89,"Vinayak","Kushwaha",null);
+//        System.out.println(m);
 //    }
 
 }

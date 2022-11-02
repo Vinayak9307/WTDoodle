@@ -1,7 +1,15 @@
 package com.nttd.wtdoodle.Client.Game.Server;
 
 import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
+import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
+import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 import com.nttd.wtdoodle.Client.Game.GameObjects.WordGenerator;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -18,54 +26,75 @@ public class GameServer {
     int numRounds;              //Current round number
     int maxRounds;              //Maximum number of round
     int currentDrawer = 0;      //Current Drawer index
+    int incrementScoreFactorForGuesser;   //Score increasing factor for correct guess
+
+    public int getIncrementScoreFactorForGuesser() {
+        return incrementScoreFactorForGuesser;
+    }
+
+    public int getIncrementScoreFactorForDrawer() {
+        return incrementScoreFactorForDrawer;
+    }
+
+    int incrementScoreFactorForDrawer;  //Score increasing factor for correct guess
+
+    public PlayerHandler getDrawer() {
+        return drawer;
+    }
+
     PlayerHandler drawer = null;    //Current Drawer
     String currentWord;         //Current word selected by the drawer
     volatile boolean isCurrentWordSelected;         //Boolean to check if the current word is selected or not.
     WordGenerator wordGenerator;    //Helper object that return three magical words XD
     String randomThreeWords;        //three magical words :p
-
-
     int remainingTime;
-    static class TimerDemo {
-        Timer timer = new Timer();
-        GameServer g ;
-
-        TimerDemo(int seconds , GameServer game) {
-            g = game;
-            timer.schedule(new RemindTask(), seconds * 1000L);
-        }
-
-        class RemindTask extends TimerTask {
-            public void run() {
-                timer.cancel();
-            }
-        }
-    }
-    //Timer class for round timer
-
-
 
     /*Method to select new drawer by the given index*/
     private void setDrawer(int drawerIndex) {
         drawer = players.get(drawerIndex);
-        sendMessageToAll(new Message(Message.type.setDrawer,drawerIndex+1));
+        sendMessageToAll(new Message(Message.type.setDrawer,drawerIndex+1,"Server","",null));
     }
-
-
 
     /*Method to start new game*/
     private void startNewGame() {
-        setDrawer(currentDrawer);
-        randomThreeWords = wordGenerator.getThreeRandomWords();
-        sendMessageToAll(new Message(Message.type.wordSelection,drawer.getPlayerID(),"Server",randomThreeWords));
-        while (!isCurrentWordSelected) {
-            Thread.onSpinWait();
+        while(numRounds < maxRounds) {
+            setRemainingTime(30);
+            setCurrentWordSelected(false);
+            setCurrentWord("");
+            setDrawer(currentDrawer++);
+            randomThreeWords = wordGenerator.getThreeRandomWords();
+            sendMessageToAll(new Message(Message.type.wordSelection, drawer.getPlayerID(), "Server", randomThreeWords, null));
+            while (!isCurrentWordSelected) {
+                Thread.onSpinWait();
+            }
+            sendMessageToAll(new Message(Message.type.general, 0, "Server", "Timer Started .", null));
+            while (getRemainingTime() > 0) {
+                sendMessageToAll(new Message(Message.type.updateTimer, 0, "Server", getRemainingTime() + "", null));
+                decrementRemainingTime(1);
+                try {
+                    Thread.sleep(1000L);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            sendClearScreenMessage();
+            sendScores();
+            numRounds++;
+            currentDrawer%=maxPlayers;
         }
-        sendMessageToAll(new Message(Message.type.general,"Timer Started ."));
-        sendMessageToAll(new Message(Message.type.updateTimer,getRemainingTime()+""));
     }
-
-
+    public void sendClearScreenMessage(){
+        PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
+        sendMessageToAll(new Message(Message.type.penPosition, 0, "Server","", p));
+    }
+    public void sendScores(){
+        StringBuilder sc = new StringBuilder();
+        for(PlayerHandler player : players){
+            sc.append(player.getPlayerID()).append(" : ").append(player.getScore()).append("\n");
+        }
+        String score = sc.toString();
+        sendMessageToAll(new Message(Message.type.setScore,0,"Server",score,null));
+    }
 
     /*GETTER AND SETTER FOR isCurrentWordSelected*/
     public boolean isCurrentWordSelected() {
@@ -90,6 +119,10 @@ public class GameServer {
     public int getRemainingTime() {
         return remainingTime;
     }
+    public void setRemainingTime(int n){
+        remainingTime = n;
+    }
+    public void decrementRemainingTime(int n){ remainingTime -= n ;}
 
     /*----------------------------*/
 
@@ -109,16 +142,18 @@ public class GameServer {
             System.out.println("=====GAME SERVER=====");
             serverSocket = new ServerSocket(1234);
         }catch (IOException e){
-            System.out.println("Error occured in GameServer constructor.");
+            System.out.println("Error occurred in GameServer constructor.");
         }
         numPlayers = 0;
         numRounds = 0;
-        maxPlayers = 3;
-        maxRounds = maxPlayers;
+        maxPlayers = 2;
+        maxRounds = maxPlayers*2;
         isCurrentWordSelected = false;
         currentWord = "";
         wordGenerator = new WordGenerator();
-        remainingTime = 120;
+        remainingTime = 10;
+        incrementScoreFactorForGuesser = 200;
+        incrementScoreFactorForDrawer = 50;
     }
 
 

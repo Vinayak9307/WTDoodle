@@ -36,5 +36,10 @@ public class PenInfo implements Serializable {
     public PenColor getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return x+ "," + y +"," + size +"," + erase +"," + color;
+    }
 }
 

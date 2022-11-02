@@ -9,6 +9,8 @@ import javafx.scene.layout.VBox;
 import java.io.*;
 import java.net.Socket;
 
+import static java.lang.System.exit;
+
 public class PtoSBridge {
     private Socket socket;
     private ObjectInputStream ois;
@@ -20,9 +22,9 @@ public class PtoSBridge {
     public PtoSBridge(Socket socket){
         try {
             this.socket = socket;
-            this.oos = new ObjectOutputStream(socket.getOutputStream());
+            this.oos = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
             oos.flush();
-            this.ois = new ObjectInputStream(socket.getInputStream());
+            this.ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
             Message m = (Message) ois.readObject();
             if(m.getType() == Message.type.setID){
                 playerID = m.getID();
@@ -52,8 +54,11 @@ public class PtoSBridge {
             public void run() {
                 while(socket.isConnected()){
                     try {
-                        Message m = (Message) ois.readObject();
-                        decodeMessage(m,g,ap_main,vBox);
+                        Object obj = ois.readObject();
+                        if(obj.getClass() == Message.class) {
+                            Message m = (Message) obj;
+                            decodeMessage(m, g, ap_main, vBox);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.out.println("Error sending Message to client");
@@ -114,6 +119,9 @@ public class PtoSBridge {
             Label label = (Label) ap_main.lookup("#l_timer");
             Player.setTimer(m.getMessage(),label);
         }
+        if(m.getType() == Message.type.setScore){
+            Player.showScore(m.getMessage(),ap_main);
+        }
     }
     public void closeEverything(Socket socket, ObjectOutputStream oos , ObjectInputStream ois){
         try {
@@ -129,6 +137,7 @@ public class PtoSBridge {
         }catch (IOException e){
             e.printStackTrace();
         }
+        exit(0);
     }
     public boolean isDrawer() {
         return drawer;

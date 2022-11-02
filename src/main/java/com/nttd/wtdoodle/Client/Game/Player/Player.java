@@ -20,6 +20,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -58,7 +59,7 @@ public class Player extends Application implements Initializable {
         bt1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[0]));
+                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[0],null));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
@@ -72,7 +73,7 @@ public class Player extends Application implements Initializable {
         bt2.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[1]));
+                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[1],null));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
@@ -86,7 +87,7 @@ public class Player extends Application implements Initializable {
         bt3.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[2]));
+                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[2],null));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
@@ -99,6 +100,34 @@ public class Player extends Application implements Initializable {
                 ap_main.getChildren().addAll(bt1, bt2, bt3);
             }
         });
+    }
+    public static void showScore(String Message , AnchorPane ap_main){
+        Label lb_score = new Label(Message);
+        lb_score.setId("lb_score");
+        lb_score.setBackground(Background.fill(Color.PINK));
+        lb_score.setTextFill(Color.BLACK);
+        lb_score.setLayoutX(211);
+        lb_score.setLayoutY(108);
+        System.out.println(Message);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ap_main.getChildren().add(lb_score);
+
+            }
+        });
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ap_main.getChildren().remove(ap_main.lookup("#lb_score"));
+            }
+        });
+
     }
     @Override
     public void start(Stage stage) throws Exception {
@@ -158,7 +187,7 @@ public class Player extends Application implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                label.setText(remainingTime);
+                label.setText(remainingTime+" sec");
             }
         });
     }
@@ -193,11 +222,11 @@ public class Player extends Application implements Initializable {
                         g.setFill(c);
                         g.fillOval(x, y, size, size);
                         PenInfo p = new PenInfo(x, y, size, false, pc);
-                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, p));
+                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "","", p));
                     } else {
                         g.clearRect(x, y, size, size);
                         PenInfo p = new PenInfo(x, y, size, true, pc);
-                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, p));
+                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "","", p));
                     }
                 }
             }
@@ -224,7 +253,7 @@ public class Player extends Application implements Initializable {
 
                         hBox.getChildren().add(textFlow);
                         vb_message.getChildren().add(hBox);
-                        ptoSBridge.sendMessageToServer(new Message(Message.type.guess,ptoSBridge.getPlayerID(),"Client" ,guess));
+                        ptoSBridge.sendMessageToServer(new Message(Message.type.guess,ptoSBridge.getPlayerID(),"Client" ,guess,null));
                     }
                 }
             }
@@ -235,9 +264,13 @@ public class Player extends Application implements Initializable {
                 if(ptoSBridge.isDrawer()){
                     g.clearRect(0, 0, 500, 500);
                     PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
-                    ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, p));
+                    ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "","", p));
                 }
             }
         });
+    }
+    @Override
+    public void stop(){
+        ptoSBridge.sendMessageToServer(new Message(Message.type.closeConnection,ptoSBridge.getPlayerID(),"","",null));
     }
 }

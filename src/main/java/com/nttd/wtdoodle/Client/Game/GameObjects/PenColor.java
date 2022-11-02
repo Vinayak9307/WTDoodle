@@ -1,6 +1,7 @@
 package com.nttd.wtdoodle.Client.Game.GameObjects;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class PenColor implements Serializable {
     double red;
@@ -21,5 +22,10 @@ public class PenColor implements Serializable {
 
     public double[] getColor() {
         return array;
+    }
+
+    @Override
+    public String toString() {
+        return red +","+green +"," + blue;
     }
 }
