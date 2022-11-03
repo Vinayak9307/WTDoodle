@@ -50,56 +50,58 @@ public class Player extends Application implements Initializable {
     static PtoSBridge ptoSBridge;
 
     public static void showWordSelectionButtons(String message, AnchorPane ap_main) {
-        String[] threeWords = message.split(",");
-        Button bt1 = new Button();
-        bt1.setId("chooseButton1");
-        bt1.setLayoutX(211);
-        bt1.setLayoutY(108);
-        bt1.setText(threeWords[0]);
-        bt1.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "Something", threeWords[0],new PenInfo()));
-                ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
-                ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
-                ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
-            }
-        });
-        Button bt2 = new Button();
-        bt2.setId("chooseButton2");
-        bt2.setLayoutX(211);
-        bt2.setLayoutY(229);
-        bt2.setText(threeWords[1]);
-        bt2.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "something", threeWords[1],new PenInfo()));
-                ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
-                ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
-                ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
-            }
-        });
-        Button bt3 = new Button();
-        bt3.setId("chooseButton3");
-        bt3.setLayoutX(211);
-        bt3.setLayoutY(351);
-        bt3.setText(threeWords[2]);
-        bt3.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "something", threeWords[2],new PenInfo()));
-                ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
-                ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
-                ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
-            }
-        });
+        if(ptoSBridge.isDrawer()) {
+            String[] threeWords = message.split(",");
+            Button bt1 = new Button();
+            bt1.setId("chooseButton1");
+            bt1.setLayoutX(211);
+            bt1.setLayoutY(108);
+            bt1.setText(threeWords[0]);
+            bt1.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "Something", threeWords[0], new PenInfo()));
+                    ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
+                    ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
+                    ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
+                }
+            });
+            Button bt2 = new Button();
+            bt2.setId("chooseButton2");
+            bt2.setLayoutX(211);
+            bt2.setLayoutY(229);
+            bt2.setText(threeWords[1]);
+            bt2.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "something", threeWords[1], new PenInfo()));
+                    ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
+                    ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
+                    ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
+                }
+            });
+            Button bt3 = new Button();
+            bt3.setId("chooseButton3");
+            bt3.setLayoutX(211);
+            bt3.setLayoutY(351);
+            bt3.setText(threeWords[2]);
+            bt3.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "something", threeWords[2], new PenInfo()));
+                    ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
+                    ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
+                    ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
+                }
+            });
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                ap_main.getChildren().addAll(bt1, bt2, bt3);
-            }
-        });
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    ap_main.getChildren().addAll(bt1, bt2, bt3);
+                }
+            });
+        }
     }
     public static void showScore(String Message , AnchorPane ap_main){
         Label lb_score = new Label(Message);

@@ -52,13 +52,13 @@ public class GameServer {
     /*Method to select new drawer by the given index*/
     private void setDrawer(int drawerIndex) {
         drawer = players.get(drawerIndex);
-        sendMessageToAll(new Message(Message.type.setDrawer,drawerIndex+1,"Server","Something",new PenInfo()));
+        sendMessageToAll(new Message(Message.type.setDrawer,(drawerIndex+1),"Server","Something",new PenInfo()));
     }
 
     /*Method to start new game*/
     private void startNewGame() {
         while(numRounds < maxRounds) {
-            setRemainingTime(30);
+            setRemainingTime(60);
             setCurrentWordSelected(false);
             setCurrentWord("");
             setDrawer(currentDrawer++);
@@ -81,6 +81,7 @@ public class GameServer {
             sendScores();
             numRounds++;
             currentDrawer%=maxPlayers;
+            System.out.println("Current drawer index .");
         }
     }
     public void sendClearScreenMessage(){

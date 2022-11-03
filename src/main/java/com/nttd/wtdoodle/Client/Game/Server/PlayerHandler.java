@@ -5,9 +5,7 @@ import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 
 import java.io.*;
 import java.net.Socket;
-import java.sql.Time;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class PlayerHandler implements Runnable {
@@ -68,10 +66,8 @@ public class PlayerHandler implements Runnable {
                                 }
                             }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        System.out.println("IOException in rMFC() . Reassigning Streams .");
                         logTime();
-                        System.out.println("Error sending Message to client");
-                        closeEverything(player,oos,ois);
                         break;
                     } catch (ClassNotFoundException e) {
                         throw new RuntimeException(e);
@@ -111,9 +107,8 @@ public class PlayerHandler implements Runnable {
             oos.writeObject(message);
             oos.flush();
         }catch (IOException e){
-            e.printStackTrace();
             logTime();
-            System.out.println("Error sending Message to client");
+            System.out.println("IOException in sMTC(). Reassigning Streams.");
         }
     }
     public void closeEverything(Socket socket, ObjectOutputStream oos , ObjectInputStream ois){

@@ -41,14 +41,12 @@ public class PtoSBridge {
         }
     }
     public void sendMessageToServer(Message message) {
-        try{
+        try {
             oos.writeObject(message);
             oos.flush();
         }catch (IOException e){
-            e.printStackTrace();
             logTime();
-            System.out.println("Error sending Message to client");
-            closeEverything(socket,oos,ois);
+            System.out.println("IOException in sMTC(). Reassigning Streams.");
         }
     }
     public void receiveMessagesFromServer(GraphicsContext g,AnchorPane ap_main,VBox vBox) {
@@ -64,10 +62,9 @@ public class PtoSBridge {
                             decodeMessage(m, g, ap_main, vBox);
                         }
                     } catch (IOException e) {
-                        logTime();
+                        System.out.println("IOException in rMFS() .");
                         e.printStackTrace();
-                        System.out.println("Error sending Message to client");
-                        closeEverything(socket,oos,ois);
+                        logTime();
                         break;
                     } catch (ClassNotFoundException e) {
                         throw new RuntimeException(e);

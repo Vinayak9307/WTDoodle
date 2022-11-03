@@ -60,6 +60,6 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return t +","+ID+"," + name + "," + message + ","+"," + pen;
+        return t +","+ID+"," + name + "," + message +"," + pen;
     }
 }
