@@ -7,7 +7,13 @@ public class PenInfo implements Serializable {
     boolean erase;
     PenColor color;
 
-
+    public PenInfo(){
+        x = 0;
+        y = 0;
+        size = 0;
+        erase = false;
+        color = new PenColor();
+    }
 
     public PenInfo(double x, double y, double size, boolean erase, PenColor color) {
         this.x = x;

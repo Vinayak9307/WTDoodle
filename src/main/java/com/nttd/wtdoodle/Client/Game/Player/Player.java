@@ -59,7 +59,7 @@ public class Player extends Application implements Initializable {
         bt1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[0],null));
+                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "Something", threeWords[0],new PenInfo()));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
@@ -73,7 +73,7 @@ public class Player extends Application implements Initializable {
         bt2.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[1],null));
+                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "something", threeWords[1],new PenInfo()));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
@@ -87,7 +87,7 @@ public class Player extends Application implements Initializable {
         bt3.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "", threeWords[2],null));
+                ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "something", threeWords[2],new PenInfo()));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
                 ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
@@ -222,11 +222,11 @@ public class Player extends Application implements Initializable {
                         g.setFill(c);
                         g.fillOval(x, y, size, size);
                         PenInfo p = new PenInfo(x, y, size, false, pc);
-                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "","", p));
+                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "something","something", p));
                     } else {
                         g.clearRect(x, y, size, size);
                         PenInfo p = new PenInfo(x, y, size, true, pc);
-                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "","", p));
+                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "something","something", p));
                     }
                 }
             }
@@ -253,7 +253,7 @@ public class Player extends Application implements Initializable {
 
                         hBox.getChildren().add(textFlow);
                         vb_message.getChildren().add(hBox);
-                        ptoSBridge.sendMessageToServer(new Message(Message.type.guess,ptoSBridge.getPlayerID(),"Client" ,guess,null));
+                        ptoSBridge.sendMessageToServer(new Message(Message.type.guess,ptoSBridge.getPlayerID(),"Client" ,guess,new PenInfo()));
                     }
                 }
             }
@@ -264,13 +264,13 @@ public class Player extends Application implements Initializable {
                 if(ptoSBridge.isDrawer()){
                     g.clearRect(0, 0, 500, 500);
                     PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
-                    ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "","", p));
+                    ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "something","something", p));
                 }
             }
         });
     }
     @Override
     public void stop(){
-        ptoSBridge.sendMessageToServer(new Message(Message.type.closeConnection,ptoSBridge.getPlayerID(),"","",null));
+        ptoSBridge.sendMessageToServer(new Message(Message.type.closeConnection,ptoSBridge.getPlayerID(),"something","something",new PenInfo()));
     }
 }

@@ -20,11 +20,19 @@ public class Message implements Serializable {
         closeConnection,
         setScore
     }
-    private final int ID;
-    private final String name;
-    private final String message;
-    private final type t;
-    private final PenInfo pen;
+    private int ID;
+    private String name;
+    private String message;
+    private type t;
+    private PenInfo pen;
+
+    public Message(){
+        ID = 0;
+        name = "";
+        message = "";
+        t = type.general;
+        pen = new PenInfo();
+    }
 
     public Message(type t,int ID, String name, String message,PenInfo p) {
         this.ID = ID;
@@ -52,6 +60,6 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return ID +"," + name + "," + message + "," + t +"," + pen;
+        return t +","+ID+"," + name + "," + message + ","+"," + pen;
     }
 }

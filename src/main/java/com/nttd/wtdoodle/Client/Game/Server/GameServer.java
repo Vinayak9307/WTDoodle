@@ -52,7 +52,7 @@ public class GameServer {
     /*Method to select new drawer by the given index*/
     private void setDrawer(int drawerIndex) {
         drawer = players.get(drawerIndex);
-        sendMessageToAll(new Message(Message.type.setDrawer,drawerIndex+1,"Server","",null));
+        sendMessageToAll(new Message(Message.type.setDrawer,drawerIndex+1,"Server","Something",new PenInfo()));
     }
 
     /*Method to start new game*/
@@ -63,13 +63,13 @@ public class GameServer {
             setCurrentWord("");
             setDrawer(currentDrawer++);
             randomThreeWords = wordGenerator.getThreeRandomWords();
-            sendMessageToAll(new Message(Message.type.wordSelection, drawer.getPlayerID(), "Server", randomThreeWords, null));
+            sendMessageToAll(new Message(Message.type.wordSelection, drawer.getPlayerID(), "Server", randomThreeWords, new PenInfo()));
             while (!isCurrentWordSelected) {
                 Thread.onSpinWait();
             }
-            sendMessageToAll(new Message(Message.type.general, 0, "Server", "Timer Started .", null));
+            sendMessageToAll(new Message(Message.type.general, 0, "Server", "Timer Started .", new PenInfo()));
             while (getRemainingTime() > 0) {
-                sendMessageToAll(new Message(Message.type.updateTimer, 0, "Server", getRemainingTime() + "", null));
+                sendMessageToAll(new Message(Message.type.updateTimer, 0, "Server", getRemainingTime() + "", new PenInfo()));
                 decrementRemainingTime(1);
                 try {
                     Thread.sleep(1000L);
@@ -85,7 +85,7 @@ public class GameServer {
     }
     public void sendClearScreenMessage(){
         PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
-        sendMessageToAll(new Message(Message.type.penPosition, 0, "Server","", p));
+        sendMessageToAll(new Message(Message.type.penPosition, 0, "Server","something", p));
     }
     public void sendScores(){
         StringBuilder sc = new StringBuilder();
@@ -93,7 +93,7 @@ public class GameServer {
             sc.append(player.getPlayerID()).append(" : ").append(player.getScore()).append("\n");
         }
         String score = sc.toString();
-        sendMessageToAll(new Message(Message.type.setScore,0,"Server",score,null));
+        sendMessageToAll(new Message(Message.type.setScore,0,"Server",score,new PenInfo()));
     }
 
     /*GETTER AND SETTER FOR isCurrentWordSelected*/
@@ -146,7 +146,7 @@ public class GameServer {
         }
         numPlayers = 0;
         numRounds = 0;
-        maxPlayers = 2;
+        maxPlayers = 3;
         maxRounds = maxPlayers*2;
         isCurrentWordSelected = false;
         currentWord = "";
@@ -182,7 +182,7 @@ public class GameServer {
     /*This method sends a message to all playerHandlers*/
     public void sendMessageToAll(Message m){
         for(PlayerHandler player : players){
-            PlayerHandler.sendMessageToClient(m,player);
+            player.sendMessageToClient(m);
         }
     }
 

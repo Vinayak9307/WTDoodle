@@ -1,9 +1,14 @@
 package com.nttd.wtdoodle.Client.Game.Server;
 
 import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
+import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class PlayerHandler implements Runnable {
     Socket player;
@@ -33,7 +38,7 @@ public class PlayerHandler implements Runnable {
         try {
             this.ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
             this.oos = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            oos.writeObject(new Message(Message.type.setID,playerID,"Server","",null));
+            oos.writeObject(new Message(Message.type.setID,playerID,"Server","something",new PenInfo()));
             oos.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -58,12 +63,13 @@ public class PlayerHandler implements Runnable {
                                 if (m.getType() != Message.type.guess && m.getType() != Message.type.closeConnection) {
                                     for (PlayerHandler client : game.getPlayers()) {
                                         if (client.equals(me)) continue;
-                                        sendMessageToClient(m, client);
+                                        client.sendMessageToClient(m);
                                     }
                                 }
                             }
                     } catch (IOException e) {
                         e.printStackTrace();
+                        logTime();
                         System.out.println("Error sending Message to client");
                         closeEverything(player,oos,ois);
                         break;
@@ -82,7 +88,7 @@ public class PlayerHandler implements Runnable {
         }
         if(m.getType() == Message.type.guess){
             if(game.getCurrentWord().equals(m.getMessage())){
-                game.sendMessageToAll(new Message(Message.type.successfullyGuessed , m.getID() , "Server","Player " + m.getID() + " has guessed the word correctly .",null));
+                game.sendMessageToAll(new Message(Message.type.successfullyGuessed , m.getID() , "Server","Player " + m.getID() + " has guessed the word correctly .",new PenInfo()));
                 score += game.getIncrementScoreFactorForGuesser();
                 game.getDrawer().incrementScore(game.getIncrementScoreFactorForDrawer());
                 System.out.println("Player #" + m.getID() + " has guessed the word correctly .");
@@ -90,21 +96,23 @@ public class PlayerHandler implements Runnable {
                 System.out.println("Player #" + game.getDrawer().getPlayerID() + " : " + game.getDrawer().getScore());
             }
             else{
-                game.sendMessageToAll(new Message(Message.type.guess , m.getID() , "" , m.getMessage() , null));
+                game.sendMessageToAll(new Message(Message.type.guess , m.getID() , "Server" , m.getMessage() , new PenInfo()));
             }
         }
         if(m.getType() == Message.type.closeConnection){
+            logTime();
             closeEverything(player , oos , ois);
             game.getPlayers().remove(m.getID()-1);
-            game.sendMessageToAll(new Message(Message.type.general,m.getID(),"Server" , "Player " + m.getID() + " has left.",null));
+            game.sendMessageToAll(new Message(Message.type.general,m.getID(),"Server" , "Player " + m.getID() + " has left.",new PenInfo()));
         }
     }
-    public static void sendMessageToClient(Message message , PlayerHandler client) {
+    public void sendMessageToClient(Message message) {
         try {
-            client.oos.writeObject(message);
-            client.oos.flush();
+            oos.writeObject(message);
+            oos.flush();
         }catch (IOException e){
             e.printStackTrace();
+            logTime();
             System.out.println("Error sending Message to client");
         }
     }
@@ -125,5 +133,11 @@ public class PlayerHandler implements Runnable {
     }
     public int getPlayerID() {
         return playerID;
+    }
+
+    public void logTime(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
     }
 }

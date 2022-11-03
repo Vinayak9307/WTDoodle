@@ -8,6 +8,8 @@ import javafx.scene.layout.VBox;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static java.lang.System.exit;
 
@@ -44,6 +46,7 @@ public class PtoSBridge {
             oos.flush();
         }catch (IOException e){
             e.printStackTrace();
+            logTime();
             System.out.println("Error sending Message to client");
             closeEverything(socket,oos,ois);
         }
@@ -57,9 +60,11 @@ public class PtoSBridge {
                         Object obj = ois.readObject();
                         if(obj.getClass() == Message.class) {
                             Message m = (Message) obj;
+                            System.out.println(m.toString());
                             decodeMessage(m, g, ap_main, vBox);
                         }
                     } catch (IOException e) {
+                        logTime();
                         e.printStackTrace();
                         System.out.println("Error sending Message to client");
                         closeEverything(socket,oos,ois);
@@ -146,4 +151,10 @@ public class PtoSBridge {
         return playerID;
     }
     public boolean isGuesser(){ return guesser; }
+
+    public void logTime(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(dtf.format(now));
+    }
 }
