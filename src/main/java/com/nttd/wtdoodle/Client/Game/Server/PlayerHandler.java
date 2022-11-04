@@ -10,8 +10,11 @@ import java.time.format.DateTimeFormatter;
 
 public class PlayerHandler implements Runnable {
     Socket player;
-    ObjectInputStream ois;
-    ObjectOutputStream oos;
+//    ObjectInputStream ois;
+//    ObjectOutputStream oos;
+
+    BufferedReader bufferedReader;
+    BufferedWriter bufferedWriter;
     int playerID;
 
     public int getScore() {
@@ -34,10 +37,16 @@ public class PlayerHandler implements Runnable {
         this.playerID = playerID;
         this.game = game;
         try {
-            this.ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
-            this.oos = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            oos.writeObject(new Message(Message.type.setID,playerID,"Server","something",new PenInfo()));
-            oos.flush();
+//            this.ois = new ObjectInputStream(socket.getInputStream());
+//            this.oos = new ObjectOutputStream(socket.getOutputStream());
+//            oos.writeObject(new Message(Message.TYPE.SET_ID,playerID,"Set Player ID."));
+//            oos.flush();
+            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            Message m = new Message(Message.TYPE.SET_ID,playerID,"Set Player ID.");
+            bufferedWriter.write(m.toString());
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -54,58 +63,69 @@ public class PlayerHandler implements Runnable {
             public void run() {
                 while(player.isConnected()){
                     try {
-                            Object obj = ois.readObject();
-                            if(obj.getClass() == Message.class){
-                                Message m = (Message) obj;
-                                decodeMessage(m);
-                                if (m.getType() != Message.type.guess && m.getType() != Message.type.closeConnection) {
-                                    for (PlayerHandler client : game.getPlayers()) {
-                                        if (client.equals(me)) continue;
-                                        client.sendMessageToClient(m);
-                                    }
-                                }
+//                            Object obj = ois.readObject();
+//                            if(obj.getClass() == Message.class){
+//                                Message m = (Message) obj;
+//                                decodeMessage(m);
+//                                if (m.getType() != Message.TYPE.GUESS && m.getType() != Message.TYPE.CLOSE_CONNECTION) {
+//                                    for (PlayerHandler client : game.getPlayers()) {
+//                                        if (client.equals(me)) continue;
+//                                        client.sendMessageToClient(m);
+//                                    }
+//                                }
+//                            }
+                        String m = bufferedReader.readLine();
+                        String []message = m.split(",");
+                        decodeMessage(m);
+                        if (Message.TYPE.valueOf(message[0]) != Message.TYPE.GUESS && Message.TYPE.valueOf(message[0]) != Message.TYPE.CLOSE_CONNECTION) {
+                            for (PlayerHandler client : game.getPlayers()) {
+                                if (client.equals(me)) continue;
+                                client.sendMessageToClient(m);
                             }
+                        }
                     } catch (IOException e) {
                         System.out.println("IOException in rMFC() . Reassigning Streams .");
                         logTime();
                         break;
-                    } catch (ClassNotFoundException e) {
-                        throw new RuntimeException(e);
                     }
                 }
             }
         }).start();
     }
 
-    private void decodeMessage(Message m) {
-        if(m.getType() == Message.type.setCurrentWord){
+    private void decodeMessage(String m) {
+        String []message = m.split(",");
+        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.SET_CURRENT_WORD){
             game.setCurrentWordSelected(true);
-            game.setCurrentWord(m.getMessage());
+            game.setCurrentWord(message[2]);
         }
-        if(m.getType() == Message.type.guess){
-            if(game.getCurrentWord().equals(m.getMessage())){
-                game.sendMessageToAll(new Message(Message.type.successfullyGuessed , m.getID() , "Server","Player " + m.getID() + " has guessed the word correctly .",new PenInfo()));
+        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.GUESS){
+            if(game.getCurrentWord().equals(message[2])){
+                game.sendMessageToAll(new Message(Message.TYPE.SUCCESSFULLY_GUESSED, Integer.parseInt(message[1]) ,"Player " + Integer.parseInt(message[1]) + " has guessed the word correctly ."));
                 score += game.getIncrementScoreFactorForGuesser();
                 game.getDrawer().incrementScore(game.getIncrementScoreFactorForDrawer());
-                System.out.println("Player #" + m.getID() + " has guessed the word correctly .");
-                System.out.println("Player #" + m.getID() + " : " + score);
+                System.out.println("Player #" + Integer.parseInt(message[1]) + " has guessed the word correctly .");
+                System.out.println("Player #" + Integer.parseInt(message[1]) + " : " + score);
                 System.out.println("Player #" + game.getDrawer().getPlayerID() + " : " + game.getDrawer().getScore());
             }
             else{
-                game.sendMessageToAll(new Message(Message.type.guess , m.getID() , "Server" , m.getMessage() , new PenInfo()));
+                game.sendMessageToAll(new Message(Message.TYPE.GUESS , Integer.parseInt(message[1]) , message[2]));
             }
         }
-        if(m.getType() == Message.type.closeConnection){
+        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.CLOSE_CONNECTION){
             logTime();
-            closeEverything(player , oos , ois);
-            game.getPlayers().remove(m.getID()-1);
-            game.sendMessageToAll(new Message(Message.type.general,m.getID(),"Server" , "Player " + m.getID() + " has left.",new PenInfo()));
+//            closeEverything(player , oos , ois);
+            game.getPlayers().remove(Integer.parseInt(message[1])-1);
+            game.sendMessageToAll(new Message(Message.TYPE.GENERAL,Integer.parseInt(message[1]),"Player " + Integer.parseInt(message[1]) + " has left."));
         }
     }
-    public void sendMessageToClient(Message message) {
+    public void sendMessageToClient(String message) {
         try {
-            oos.writeObject(message);
-            oos.flush();
+            bufferedWriter.write(message);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+//            oos.writeObject(message);
+//            oos.flush();
         }catch (IOException e){
             logTime();
             System.out.println("IOException in sMTC(). Reassigning Streams.");

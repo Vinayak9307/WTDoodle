@@ -4,19 +4,11 @@ import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 import com.nttd.wtdoodle.Client.Game.GameObjects.WordGenerator;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GameServer {
 
@@ -52,49 +44,54 @@ public class GameServer {
     /*Method to select new drawer by the given index*/
     private void setDrawer(int drawerIndex) {
         drawer = players.get(drawerIndex);
-        sendMessageToAll(new Message(Message.type.setDrawer,(drawerIndex+1),"Server","Something",new PenInfo()));
+        sendMessageToAll(new Message(Message.TYPE.SET_DRAWER,(drawerIndex+1),"Naya Drawer"));
     }
 
     /*Method to start new game*/
     private void startNewGame() {
-        while(numRounds < maxRounds) {
-            setRemainingTime(60);
-            setCurrentWordSelected(false);
-            setCurrentWord("");
-            setDrawer(currentDrawer++);
-            randomThreeWords = wordGenerator.getThreeRandomWords();
-            sendMessageToAll(new Message(Message.type.wordSelection, drawer.getPlayerID(), "Server", randomThreeWords, new PenInfo()));
-            while (!isCurrentWordSelected) {
-                Thread.onSpinWait();
-            }
-            sendMessageToAll(new Message(Message.type.general, 0, "Server", "Timer Started .", new PenInfo()));
-            while (getRemainingTime() > 0) {
-                sendMessageToAll(new Message(Message.type.updateTimer, 0, "Server", getRemainingTime() + "", new PenInfo()));
-                decrementRemainingTime(1);
-                try {
-                    Thread.sleep(1000L);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(numRounds < maxRounds) {
+                    setRemainingTime(20);
+                    setCurrentWordSelected(false);
+                    setCurrentWord("");
+                    setDrawer(currentDrawer++);
+                    randomThreeWords = wordGenerator.getThreeRandomWords();
+                    sendMessageToAll(new Message(Message.TYPE.WORD_SELECTION, drawer.getPlayerID(), randomThreeWords));
+                    while (!isCurrentWordSelected) {
+                        Thread.onSpinWait();
+                    }
+                    sendMessageToAll(new Message(Message.TYPE.GENERAL,0,"Timer Started"));
+                    while (getRemainingTime() > 0) {
+                        sendMessageToAll(new Message(Message.TYPE.UPDATE_TIMER, 0, getRemainingTime() + ""));
+                        decrementRemainingTime(1);
+                        try {
+                            Thread.sleep(1000L);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    sendClearScreenMessage();
+                    sendScores();
+                    numRounds++;
+                    currentDrawer%=maxPlayers;
+                    System.out.println("Current drawer index .");
                 }
             }
-            sendClearScreenMessage();
-            sendScores();
-            numRounds++;
-            currentDrawer%=maxPlayers;
-            System.out.println("Current drawer index .");
-        }
+        }).start();
     }
     public void sendClearScreenMessage(){
         PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
-        sendMessageToAll(new Message(Message.type.penPosition, 0, "Server","something", p));
+        sendMessageToAll(new Message(Message.TYPE.PEN_POSITION, 0, p.toString()));
     }
     public void sendScores(){
         StringBuilder sc = new StringBuilder();
         for(PlayerHandler player : players){
-            sc.append(player.getPlayerID()).append(" : ").append(player.getScore()).append("\n");
+            sc.append(player.getPlayerID()).append(" : ").append(player.getScore()).append("@");
         }
         String score = sc.toString();
-        sendMessageToAll(new Message(Message.type.setScore,0,"Server",score,new PenInfo()));
+        sendMessageToAll(new Message(Message.TYPE.SET_SCORE,0,score));
     }
 
     /*GETTER AND SETTER FOR isCurrentWordSelected*/
@@ -183,7 +180,7 @@ public class GameServer {
     /*This method sends a message to all playerHandlers*/
     public void sendMessageToAll(Message m){
         for(PlayerHandler player : players){
-            player.sendMessageToClient(m);
+            player.sendMessageToClient(m.toString());
         }
     }
 

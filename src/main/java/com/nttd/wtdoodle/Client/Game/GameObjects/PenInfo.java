@@ -45,7 +45,7 @@ public class PenInfo implements Serializable {
 
     @Override
     public String toString() {
-        return x+ "," + y +"," + size +"," + erase +"," + color;
+        return x +","+ y +"," + size +"," + erase +","+ color;
     }
 }
 

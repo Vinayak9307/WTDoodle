@@ -37,7 +37,7 @@ public class WordGenerator {
         int rand;
         for (int i = 0 ; i < 2 ; i++){
             rand = r.nextInt(words.size());
-            selectedWords.append(words.get(rand)).append(",");
+            selectedWords.append(words.get(rand)).append(" ");
         }
         rand = r.nextInt(words.size());
         selectedWords.append(words.get(rand));

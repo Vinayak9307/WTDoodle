@@ -6,60 +6,61 @@ import java.io.Serializable;
 
 public class Message implements Serializable {
 
-    public enum type{
+    public enum TYPE{
         start,
-        setID,
-        penPosition,
-        guess,
-        setDrawer,
-        wordSelection,
-        setCurrentWord,
-        general,
-        successfullyGuessed,
-        updateTimer,
-        closeConnection,
-        setScore
+        SET_ID,
+        PEN_POSITION,
+        GUESS,
+        SET_DRAWER,
+        WORD_SELECTION,
+        SET_CURRENT_WORD,
+        GENERAL,
+        SUCCESSFULLY_GUESSED,
+        UPDATE_TIMER,
+        CLOSE_CONNECTION,
+        SET_SCORE
     }
-    private int ID;
-    private String name;
-    private String message;
-    private type t;
-    private PenInfo pen;
-
+    private TYPE type;
+    private int id;
+    private String content;
     public Message(){
-        ID = 0;
-        name = "";
-        message = "";
-        t = type.general;
-        pen = new PenInfo();
+        id = 0;
+        type = TYPE.GENERAL;
+        content = "";
     }
 
-    public Message(type t,int ID, String name, String message,PenInfo p) {
-        this.ID = ID;
-        this.name = name;
-        this.message = message;
-        this.t = t;
-        this.pen = p;
+    public Message(TYPE type, int id, String content) {
+        this.type = type;
+        this.id = id;
+        this.content = content;
     }
 
-    public int getID() {
-        return ID;
+    public void setType(TYPE type) {
+        this.type = type;
     }
-    public String getName() {
-        return name;
+
+    public TYPE getType() {
+        return type;
     }
-    public String getMessage() {
-        return message;
+
+    public int getId() {
+        return id;
     }
-    public type getType() {
-        return t;
+
+    public void setId(int id) {
+        this.id = id;
     }
-    public PenInfo getPen() {
-        return pen;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override
     public String toString() {
-        return t +","+ID+"," + name + "," + message +"," + pen;
+        return type + "," + id + "," + content;
     }
 }

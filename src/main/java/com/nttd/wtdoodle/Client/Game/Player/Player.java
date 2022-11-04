@@ -51,7 +51,7 @@ public class Player extends Application implements Initializable {
 
     public static void showWordSelectionButtons(String message, AnchorPane ap_main) {
         if(ptoSBridge.isDrawer()) {
-            String[] threeWords = message.split(",");
+            String[] threeWords = message.split(" ");
             Button bt1 = new Button();
             bt1.setId("chooseButton1");
             bt1.setLayoutX(211);
@@ -60,7 +60,7 @@ public class Player extends Application implements Initializable {
             bt1.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "Something", threeWords[0], new PenInfo()));
+                    ptoSBridge.sendMessageToServer(new Message(Message.TYPE.SET_CURRENT_WORD, ptoSBridge.getPlayerID(),threeWords[0]));
                     ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
                     ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
                     ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
@@ -74,7 +74,7 @@ public class Player extends Application implements Initializable {
             bt2.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "something", threeWords[1], new PenInfo()));
+                    ptoSBridge.sendMessageToServer(new Message(Message.TYPE.SET_CURRENT_WORD, ptoSBridge.getPlayerID(),threeWords[1]));
                     ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
                     ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
                     ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
@@ -88,7 +88,7 @@ public class Player extends Application implements Initializable {
             bt3.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    ptoSBridge.sendMessageToServer(new Message(Message.type.setCurrentWord, ptoSBridge.getPlayerID(), "something", threeWords[2], new PenInfo()));
+                    ptoSBridge.sendMessageToServer(new Message(Message.TYPE.SET_CURRENT_WORD, ptoSBridge.getPlayerID(),threeWords[2]));
                     ap_main.getChildren().remove(ap_main.lookup("#chooseButton1"));
                     ap_main.getChildren().remove(ap_main.lookup("#chooseButton2"));
                     ap_main.getChildren().remove(ap_main.lookup("#chooseButton3"));
@@ -103,14 +103,19 @@ public class Player extends Application implements Initializable {
             });
         }
     }
-    public static void showScore(String Message , AnchorPane ap_main){
-        Label lb_score = new Label(Message);
+    public static void showScore(String message , AnchorPane ap_main){
+        String[] scores = message.split("@");
+        StringBuilder sc = new StringBuilder();
+        for(int i = 0 ; i < scores.length; i++){
+            sc.append(scores[i]).append("\n");
+        }
+        Label lb_score = new Label(sc.toString());
         lb_score.setId("lb_score");
         lb_score.setBackground(Background.fill(Color.PINK));
         lb_score.setTextFill(Color.BLACK);
         lb_score.setLayoutX(211);
         lb_score.setLayoutY(108);
-        System.out.println(Message);
+        System.out.println(sc.toString());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -224,11 +229,11 @@ public class Player extends Application implements Initializable {
                         g.setFill(c);
                         g.fillOval(x, y, size, size);
                         PenInfo p = new PenInfo(x, y, size, false, pc);
-                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "something","something", p));
+                        ptoSBridge.sendMessageToServer(new Message(Message.TYPE.PEN_POSITION,ptoSBridge.getPlayerID(),p.toString()));
                     } else {
                         g.clearRect(x, y, size, size);
                         PenInfo p = new PenInfo(x, y, size, true, pc);
-                        ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "something","something", p));
+                        ptoSBridge.sendMessageToServer(new Message(Message.TYPE.PEN_POSITION,ptoSBridge.getPlayerID(),p.toString()));
                     }
                 }
             }
@@ -255,7 +260,7 @@ public class Player extends Application implements Initializable {
 
                         hBox.getChildren().add(textFlow);
                         vb_message.getChildren().add(hBox);
-                        ptoSBridge.sendMessageToServer(new Message(Message.type.guess,ptoSBridge.getPlayerID(),"Client" ,guess,new PenInfo()));
+                        ptoSBridge.sendMessageToServer(new Message(Message.TYPE.GUESS,ptoSBridge.getPlayerID(),guess));
                     }
                 }
             }
@@ -266,13 +271,13 @@ public class Player extends Application implements Initializable {
                 if(ptoSBridge.isDrawer()){
                     g.clearRect(0, 0, 500, 500);
                     PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
-                    ptoSBridge.sendMessageToServer(new Message(Message.type.penPosition, ptoSBridge.getPlayerID(), "something","something", p));
+                    ptoSBridge.sendMessageToServer(new Message(Message.TYPE.PEN_POSITION, ptoSBridge.getPlayerID(), p.toString()));
                 }
             }
         });
     }
     @Override
     public void stop(){
-        ptoSBridge.sendMessageToServer(new Message(Message.type.closeConnection,ptoSBridge.getPlayerID(),"something","something",new PenInfo()));
+        ptoSBridge.sendMessageToServer(new Message(Message.TYPE.CLOSE_CONNECTION,ptoSBridge.getPlayerID(),"Close Connection."));
     }
 }
