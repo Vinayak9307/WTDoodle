@@ -1,7 +1,5 @@
 package com.nttd.wtdoodle.Client.Game.GameObjects;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Message implements Serializable {

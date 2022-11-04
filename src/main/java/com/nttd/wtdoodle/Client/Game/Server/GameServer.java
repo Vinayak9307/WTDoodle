@@ -53,17 +53,19 @@ public class GameServer {
             @Override
             public void run() {
                 while(numRounds < maxRounds) {
-                    setRemainingTime(20);
+                    sendClearScreenMessage();
+                    setRemainingTime(120);
                     setCurrentWordSelected(false);
                     setCurrentWord("");
                     setDrawer(currentDrawer++);
+                    setGuessers();
                     randomThreeWords = wordGenerator.getThreeRandomWords();
                     sendMessageToAll(new Message(Message.TYPE.WORD_SELECTION, drawer.getPlayerID(), randomThreeWords));
                     while (!isCurrentWordSelected) {
                         Thread.onSpinWait();
                     }
                     sendMessageToAll(new Message(Message.TYPE.GENERAL,0,"Timer Started"));
-                    while (getRemainingTime() > 0) {
+                    while (getRemainingTime() > 0 && allHaveNotGuessed()) {
                         sendMessageToAll(new Message(Message.TYPE.UPDATE_TIMER, 0, getRemainingTime() + ""));
                         decrementRemainingTime(1);
                         try {
@@ -72,11 +74,9 @@ public class GameServer {
                             throw new RuntimeException(e);
                         }
                     }
-                    sendClearScreenMessage();
                     sendScores();
                     numRounds++;
                     currentDrawer%=maxPlayers;
-                    System.out.println("Current drawer index .");
                 }
             }
         }).start();
@@ -84,6 +84,20 @@ public class GameServer {
     public void sendClearScreenMessage(){
         PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
         sendMessageToAll(new Message(Message.TYPE.PEN_POSITION, 0, p.toString()));
+    }
+    public boolean allHaveNotGuessed(){
+        for(PlayerHandler player : players){
+            if(player == drawer) continue;
+            if(!player.hasGuessed()){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void setGuessers(){
+        for(PlayerHandler player : players){
+            player.setGuessed(false);
+        }
     }
     public void sendScores(){
         StringBuilder sc = new StringBuilder();
@@ -144,7 +158,7 @@ public class GameServer {
         }
         numPlayers = 0;
         numRounds = 0;
-        maxPlayers = 3;
+        maxPlayers = 2;
         maxRounds = maxPlayers*2;
         isCurrentWordSelected = false;
         currentWord = "";

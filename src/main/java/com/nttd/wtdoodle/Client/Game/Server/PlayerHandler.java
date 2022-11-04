@@ -1,7 +1,6 @@
 package com.nttd.wtdoodle.Client.Game.Server;
 
 import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
-import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 
 import java.io.*;
 import java.net.Socket;
@@ -16,6 +15,7 @@ public class PlayerHandler implements Runnable {
     BufferedReader bufferedReader;
     BufferedWriter bufferedWriter;
     int playerID;
+    boolean guessed;
 
     public int getScore() {
         return score;
@@ -27,6 +27,12 @@ public class PlayerHandler implements Runnable {
     public void incrementScore(int score){
         this.score += score;
     }
+    public boolean hasGuessed(){
+        return guessed;
+    }
+    public void setGuessed(boolean guessed){
+        this.guessed = guessed;
+    }
 
     int score;
 
@@ -36,6 +42,8 @@ public class PlayerHandler implements Runnable {
         this.player = socket;
         this.playerID = playerID;
         this.game = game;
+        this.score = 0;
+        this.guessed = false;
         try {
 //            this.ois = new ObjectInputStream(socket.getInputStream());
 //            this.oos = new ObjectOutputStream(socket.getOutputStream());
@@ -102,6 +110,7 @@ public class PlayerHandler implements Runnable {
         if(Message.TYPE.valueOf(message[0]) == Message.TYPE.GUESS){
             if(game.getCurrentWord().toLowerCase().equals(message[2].toLowerCase())){
                 game.sendMessageToAll(new Message(Message.TYPE.SUCCESSFULLY_GUESSED, Integer.parseInt(message[1]) ,"Player " + Integer.parseInt(message[1]) + " has guessed the word correctly ."));
+                setGuessed(true);
                 score += game.getIncrementScoreFactorForGuesser();
                 game.getDrawer().incrementScore(game.getIncrementScoreFactorForDrawer());
                 System.out.println("Player #" + Integer.parseInt(message[1]) + " has guessed the word correctly .");
