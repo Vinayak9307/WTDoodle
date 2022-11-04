@@ -100,7 +100,7 @@ public class PlayerHandler implements Runnable {
             game.setCurrentWord(message[2]);
         }
         if(Message.TYPE.valueOf(message[0]) == Message.TYPE.GUESS){
-            if(game.getCurrentWord().equals(message[2])){
+            if(game.getCurrentWord().toLowerCase().equals(message[2].toLowerCase())){
                 game.sendMessageToAll(new Message(Message.TYPE.SUCCESSFULLY_GUESSED, Integer.parseInt(message[1]) ,"Player " + Integer.parseInt(message[1]) + " has guessed the word correctly ."));
                 score += game.getIncrementScoreFactorForGuesser();
                 game.getDrawer().incrementScore(game.getIncrementScoreFactorForDrawer());
