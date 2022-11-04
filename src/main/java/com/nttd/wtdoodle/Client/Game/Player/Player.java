@@ -111,7 +111,6 @@ public class Player extends Application implements Initializable {
         }
         Label lb_score = new Label(sc.toString());
         lb_score.setId("lb_score");
-        lb_score.setBackground(Background.fill(Color.PINK));
         lb_score.setTextFill(Color.BLACK);
         lb_score.setLayoutX(211);
         lb_score.setLayoutY(108);
