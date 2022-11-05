@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="ap_main" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.HostLobby">
+    <Button fx:id="bt_start" layoutX="269.0" layoutY="288.0" mnemonicParsing="false" text="Start" />
+    <Label fx:id="lb_players" layoutX="43.0" layoutY="48.0" text="Label" />
+   <Label layoutX="332.0" layoutY="161.0" text="Host IP">
+      <font>
+         <Font name="Ubuntu Bold" size="15.0" />
+      </font>
+   </Label>
+   <Label fx:id="lb_hostIp" layoutX="404.0" layoutY="161.0" prefHeight="16.0" prefWidth="165.0" text="Label">
+      <font>
+         <Font name="Ubuntu Bold" size="15.0" />
+      </font>
+   </Label>
+   <Label layoutX="332.0" layoutY="206.0" text="Port No">
+      <font>
+         <Font name="Ubuntu Bold" size="15.0" />
+      </font>
+   </Label>
+   <Label fx:id="lb_portNo" layoutX="404.0" layoutY="206.0" prefHeight="16.0" prefWidth="165.0" text="Label">
+      <font>
+         <Font name="Ubuntu Bold" size="15.0" />
+      </font>
+   </Label>
+</AnchorPane>

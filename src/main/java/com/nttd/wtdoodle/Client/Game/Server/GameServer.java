@@ -4,13 +4,14 @@ import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 import com.nttd.wtdoodle.Client.Game.GameObjects.WordGenerator;
+import com.nttd.wtdoodle.Client.Lobby.HostLobby;
+import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
+import java.net.*;
+import java.util.*;
 
-public class GameServer {
+public class GameServer implements Runnable{
 
     /* ------ GAME RELATED -------*/
     int numPlayers;             //No of Players in lobby
@@ -19,6 +20,8 @@ public class GameServer {
     int maxRounds;              //Maximum number of round
     int currentDrawer = 0;      //Current Drawer index
     int incrementScoreFactorForGuesser;   //Score increasing factor for correct guess
+    String playerNames;
+    AnchorPane ap_main;
 
     public int getIncrementScoreFactorForGuesser() {
         return incrementScoreFactorForGuesser;
@@ -44,17 +47,17 @@ public class GameServer {
     /*Method to select new drawer by the given index*/
     private void setDrawer(int drawerIndex) {
         drawer = players.get(drawerIndex);
-        sendMessageToAll(new Message(Message.TYPE.SET_DRAWER,(drawerIndex+1),"Naya Drawer"));
+        sendMessageToAll(new Message(Message.TYPE.SET_DRAWER,(drawerIndex+1),drawer.getPlayerName()));
     }
 
     /*Method to start new game*/
-    private void startNewGame() {
+    public void startNewGame() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while(numRounds < maxRounds) {
                     sendClearScreenMessage();
-                    setRemainingTime(120);
+                    setRemainingTime(20);
                     setCurrentWordSelected(false);
                     setCurrentWord("");
                     setDrawer(currentDrawer++);
@@ -78,6 +81,7 @@ public class GameServer {
                     numRounds++;
                     currentDrawer%=maxPlayers;
                 }
+
             }
         }).start();
     }
@@ -100,9 +104,14 @@ public class GameServer {
         }
     }
     public void sendScores(){
+        int max = 10000;
         StringBuilder sc = new StringBuilder();
+        TreeMap<Integer,PlayerHandler> sorted = new TreeMap<Integer, PlayerHandler>();
         for(PlayerHandler player : players){
-            sc.append(player.getPlayerID()).append(" : ").append(player.getScore()).append("@");
+            sorted.put((max - player.getScore()),player);
+        }
+        for(Map.Entry<Integer,PlayerHandler> entry : sorted.entrySet()) {
+            sc.append(entry.getValue().getPlayerName()).append(" : ").append((max-entry.getKey())).append("@");
         }
         String score = sc.toString();
         sendMessageToAll(new Message(Message.TYPE.SET_SCORE,0,score));
@@ -147,18 +156,23 @@ public class GameServer {
         return players;
     }
 
+    public String getJoinCode(){
+        return Objects.requireNonNull(getLocalAddress()).toString() + "," + serverSocket.getLocalPort();
+    }
 
     /*GameServer Constructor to create new ServerSocket as well as initialize various game variables*/
-    public GameServer(){
+    public GameServer(AnchorPane anchorPane){
         try{
             System.out.println("=====GAME SERVER=====");
             serverSocket = new ServerSocket(1234);
         }catch (IOException e){
             System.out.println("Error occurred in GameServer constructor.");
         }
+        ap_main = anchorPane;
         numPlayers = 0;
         numRounds = 0;
         maxPlayers = 2;
+        playerNames = "";
         maxRounds = maxPlayers*2;
         isCurrentWordSelected = false;
         currentWord = "";
@@ -171,7 +185,7 @@ public class GameServer {
 
 
     /*This method accepts socket connections and creates new playerHandlers*/
-    private void acceptConnection(){
+    public void acceptConnection(){
         try{
             System.out.println("Waiting for clients.....");
             while(numPlayers < maxPlayers) {
@@ -181,15 +195,29 @@ public class GameServer {
                 Thread t = new Thread(p);
                 t.start();
                 players.add(p);
+                playerNames += p.getPlayerName();
+                HostLobby.updatePlayerLabel(playerNames,ap_main);
+                sendMessageToAll(new Message(Message.TYPE.NEW_PLAYER_JOINED,0,playerNames));
             }
         }catch (IOException e){
             System.out.println("Error occurred in GameServer acceptConnection.");
         }
         System.out.println("Not Accepting any other connections ...");
-        startNewGame();
     }
 
-
+    private static InetAddress getLocalAddress(){
+        try {
+            Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
+            while( b.hasMoreElements()){
+                for ( InterfaceAddress f : b.nextElement().getInterfaceAddresses())
+                    if ( f.getAddress().isSiteLocalAddress())
+                        return f.getAddress();
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /*This method sends a message to all playerHandlers*/
     public void sendMessageToAll(Message m){
@@ -198,13 +226,18 @@ public class GameServer {
         }
     }
 
+    @Override
+    public void run() {
+        acceptConnection();
+    }
+
 
     /* -------------------------- */
 
 
     //Main method//
-    public static void main(String[] args){
-        GameServer game = new GameServer();
-        game.acceptConnection();
-    }
+//    public static void main(String[] args){
+//        GameServer game = new GameServer();
+//        game.acceptConnection();
+//    }
 }

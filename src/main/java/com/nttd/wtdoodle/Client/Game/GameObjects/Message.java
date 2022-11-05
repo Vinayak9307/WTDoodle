@@ -5,7 +5,9 @@ import java.io.Serializable;
 public class Message implements Serializable {
 
     public enum TYPE{
-        start,
+        START_GAME,
+        NEW_PLAYER_JOINED,
+        SET_NAME,
         SET_ID,
         PEN_POSITION,
         GUESS,

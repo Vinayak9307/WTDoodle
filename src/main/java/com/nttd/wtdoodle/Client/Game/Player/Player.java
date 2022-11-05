@@ -49,6 +49,10 @@ public class Player extends Application implements Initializable {
     GraphicsContext g;
     static PtoSBridge ptoSBridge;
 
+    public static void setPtoSBridge(PtoSBridge ptoSBridge) {
+        Player.ptoSBridge = ptoSBridge;
+    }
+
     public static void showWordSelectionButtons(String message, AnchorPane ap_main) {
         if(ptoSBridge.isDrawer()) {
             String[] threeWords = message.split(" ");
@@ -137,16 +141,12 @@ public class Player extends Application implements Initializable {
     }
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Player.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 500);
-        stage.setTitle("GameScreen");
-        stage.setScene(scene);
-        stage.show();
+
     }
 
-    public static void main(String[] args) {
-        launch();
-    }
+//    public static void main(String[] args) {
+//        launch();
+//    }
 
     public static void drawOnCanvas(PenInfo p , GraphicsContext g){
         double x = p.getX();
@@ -199,14 +199,11 @@ public class Player extends Application implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            ptoSBridge = new PtoSBridge(new Socket("localhost" , 1234));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
         g = canvas.getGraphicsContext2D();
-        ptoSBridge.receiveMessagesFromServer(g,ap_main,vb_message);
+
+        ptoSBridge.setG(g);
+        ptoSBridge.setVBox(vb_message);
+        ptoSBridge.setAp_main(ap_main);
 
         vb_message.heightProperty().addListener(new ChangeListener<Number>() {
             @Override

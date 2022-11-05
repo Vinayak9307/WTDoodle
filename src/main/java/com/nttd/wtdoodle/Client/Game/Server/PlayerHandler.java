@@ -8,14 +8,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class PlayerHandler implements Runnable {
+    int playerID;
+    String playerName;
+    boolean guessed;
+    int score;
     Socket player;
-//    ObjectInputStream ois;
-//    ObjectOutputStream oos;
-
     BufferedReader bufferedReader;
     BufferedWriter bufferedWriter;
-    int playerID;
-    boolean guessed;
 
     public int getScore() {
         return score;
@@ -33,8 +32,10 @@ public class PlayerHandler implements Runnable {
     public void setGuessed(boolean guessed){
         this.guessed = guessed;
     }
+    public String getPlayerName() {
+        return playerName;
+    }
 
-    int score;
 
     GameServer game;
 
@@ -45,20 +46,21 @@ public class PlayerHandler implements Runnable {
         this.score = 0;
         this.guessed = false;
         try {
-//            this.ois = new ObjectInputStream(socket.getInputStream());
-//            this.oos = new ObjectOutputStream(socket.getOutputStream());
-//            oos.writeObject(new Message(Message.TYPE.SET_ID,playerID,"Set Player ID."));
-//            oos.flush();
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             Message m = new Message(Message.TYPE.SET_ID,playerID,"Set Player ID.");
             bufferedWriter.write(m.toString());
             bufferedWriter.newLine();
             bufferedWriter.flush();
+
+            String[] message = bufferedReader.readLine().split(",");
+            if(Message.TYPE.valueOf(message[0]) == Message.TYPE.SET_NAME) {
+                this.playerName = message[2];
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(playerID + " connected to the server .");
+        System.out.println(playerName + " connected to the server .");
     }
     @Override
     public void run() {
@@ -109,23 +111,22 @@ public class PlayerHandler implements Runnable {
         }
         if(Message.TYPE.valueOf(message[0]) == Message.TYPE.GUESS){
             if(game.getCurrentWord().toLowerCase().equals(message[2].toLowerCase())){
-                game.sendMessageToAll(new Message(Message.TYPE.SUCCESSFULLY_GUESSED, Integer.parseInt(message[1]) ,"Player " + Integer.parseInt(message[1]) + " has guessed the word correctly ."));
+                game.sendMessageToAll(new Message(Message.TYPE.SUCCESSFULLY_GUESSED, Integer.parseInt(message[1]) ,playerName + " has guessed the word correctly ."));
                 setGuessed(true);
                 score += game.getIncrementScoreFactorForGuesser();
                 game.getDrawer().incrementScore(game.getIncrementScoreFactorForDrawer());
-                System.out.println("Player #" + Integer.parseInt(message[1]) + " has guessed the word correctly .");
-                System.out.println("Player #" + Integer.parseInt(message[1]) + " : " + score);
-                System.out.println("Player #" + game.getDrawer().getPlayerID() + " : " + game.getDrawer().getScore());
+                System.out.println("Player #" + Integer.parseInt(message[1]) + " " +playerName + " has guessed the word correctly .");
+                System.out.println("Player #" + Integer.parseInt(message[1]) + " " +playerName + " : " + score);
+                System.out.println("Player #" + game.getDrawer().getPlayerID() + " " + game.getDrawer().getPlayerName() + " : " + game.getDrawer().getScore());
             }
             else{
-                game.sendMessageToAll(new Message(Message.TYPE.GUESS , Integer.parseInt(message[1]) , message[2]));
+                game.sendMessageToAll(new Message(Message.TYPE.GUESS , Integer.parseInt(message[1]) , playerName + " has guessed " + message[2]));
             }
         }
         if(Message.TYPE.valueOf(message[0]) == Message.TYPE.CLOSE_CONNECTION){
             logTime();
-//            closeEverything(player , oos , ois);
             game.getPlayers().remove(Integer.parseInt(message[1])-1);
-            game.sendMessageToAll(new Message(Message.TYPE.GENERAL,Integer.parseInt(message[1]),"Player " + Integer.parseInt(message[1]) + " has left."));
+            game.sendMessageToAll(new Message(Message.TYPE.GENERAL,Integer.parseInt(message[1]),playerName + " has left."));
         }
     }
     public void sendMessageToClient(String message) {
