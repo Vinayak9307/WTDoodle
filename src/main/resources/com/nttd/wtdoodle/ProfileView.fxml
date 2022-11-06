@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<AnchorPane prefHeight="570.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.Profile">
+   <children>
+      <ScrollPane layoutX="107.0" layoutY="213.0" prefHeight="173.0" prefWidth="403.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+        </content>
+      </ScrollPane>
+       <ImageView fx:id="profilePic" fitHeight="66.0" fitWidth="82.0" layoutX="35.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" onMouseReleased="#profileImageClicked">
+           <image>
+               <Image url="@Images/profilePic.png" />
+           </image>
+       </ImageView>
+   </children>
+</AnchorPane>
