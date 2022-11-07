@@ -73,13 +73,14 @@ public class OtherLobby extends Application implements Initializable {
                     } catch (IOException e) {
                         lb_update.setText("Enter a valid IpAddress and Port No.");
                     }
+                    ap_main.getChildren().removeAll(ap_main.lookup("#tf_hostIp"));
+                    ap_main.getChildren().removeAll(ap_main.lookup("#tf_portNo"));
+                    ap_main.getChildren().removeAll(ap_main.lookup("#bt_join"));
                 }
                 else{
                     lb_update.setText("Enter a valid IpAddress and Port No.");
                 }
-                ap_main.getChildren().removeAll(ap_main.lookup("#tf_hostIp"));
-                ap_main.getChildren().removeAll(ap_main.lookup("#tf_portNo"));
-                ap_main.getChildren().removeAll(ap_main.lookup("#bt_join"));
+
             }
 
         });
