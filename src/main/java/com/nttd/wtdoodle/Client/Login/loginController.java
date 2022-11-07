@@ -75,7 +75,23 @@ public class loginController extends Application {
             }
 
         }
+        //for opening dashboard
+        public void dashboard(){
+            try {
 
+                    FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load(), 950, 570);
+                    Stage dashboardstage = (Stage)loginMessageLabel.getScene().getWindow();
+                    dashboardstage.setScene(scene);
+                    dashboardstage.show();
+
+            }
+            catch (Exception e){
+                e.getCause();
+                e.printStackTrace();
+            }
+
+        }
         //validating login credential
         public void validateLogin(){
             databaseConnection connectNow =new databaseConnection();
@@ -92,7 +108,7 @@ public class loginController extends Application {
                 while(querryResult.next())
                 {
                     if(querryResult.getInt(1) == 1){
-                        loginMessageLabel.setText("congrats");
+                        dashboard();
                     }
                     else{
                         loginMessageLabel.setText("invalid credentials");

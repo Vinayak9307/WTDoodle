@@ -12,15 +12,8 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
-public class Dashboard extends Application {
-    @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 950, 570);
-        stage.initStyle(StageStyle.DECORATED);
-        stage.setScene(scene);
-        stage.show();
-    }
+public class Dashboard  {
+
     public void hostButtonOnAction(ActionEvent event){
        // System.out.println("host button has been clicked");
         FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("HostLobby.fxml"));
@@ -84,7 +77,5 @@ public class Dashboard extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
-        launch();
-    }
+
 }
