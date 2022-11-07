@@ -5,12 +5,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class Profile {
+public class LeaderBoard {
 
     public void goToDashboard(ActionEvent event) {
         FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
@@ -26,6 +25,4 @@ public class Profile {
         stage.setScene(scene);
         stage.show();
     }
-
-
 }
