@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="570.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.LeaderBoard">
+   <children>
+      <ScrollPane layoutX="192.0" layoutY="202.0" prefHeight="338.0" prefWidth="596.0">
+         <content>
+            <GridPane prefHeight="85.0" prefWidth="596.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="311.60003662109375" minWidth="10.0" prefWidth="86.40001831054687" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="273.1999969482422" minWidth="10.0" prefWidth="155.19998779296878" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="273.1999969482422" minWidth="10.0" prefWidth="106.40001220703124" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="273.1999969482422" minWidth="10.0" prefWidth="106.40001220703124" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="42.20000305175781" minHeight="10.0" prefHeight="32.60001220703125" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="42.19998779296875" minHeight="10.0" prefHeight="42.19998779296875" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
+         </content>
+      </ScrollPane>
+      <Label layoutX="370.0" layoutY="97.0" prefHeight="74.0" prefWidth="294.0" text="LeaderBoard">
+         <font>
+            <Font size="51.0" />
+         </font>
+      </Label>
+      <Button mnemonicParsing="false" onAction="#goToDashboard" prefHeight="38.0" prefWidth="81.0" text="&lt;-">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

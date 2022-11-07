@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="570.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.Profile">
+   <children>
+       <ImageView fx:id="profilePic" fitHeight="66.0" fitWidth="82.0" layoutX="80.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
+           <image>
+               <Image url="@Images/profilePic.png" />
+           </image>
+       </ImageView>
+      <ScrollPane layoutX="243.0" layoutY="242.0" prefHeight="305.0" prefWidth="478.0" />
+      <Label layoutX="196.0" layoutY="54.0" prefHeight="31.0" prefWidth="90.0" text="Name">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="297.0" layoutY="54.0" prefHeight="31.0" prefWidth="146.0" text="dummyname">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="196.0" layoutY="107.0" prefHeight="31.0" prefWidth="90.0" text="Email">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="297.0" layoutY="107.0" prefHeight="31.0" prefWidth="146.0" text="dummy@email.com">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="196.0" layoutY="79.0" prefHeight="31.0" prefWidth="90.0" text="username">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="297.0" layoutY="79.0" prefHeight="31.0" prefWidth="166.0" text="dummyusername">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="196.0" layoutY="132.0" prefHeight="31.0" prefWidth="90.0" text="HighScore">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="297.0" layoutY="132.0" prefHeight="31.0" prefWidth="146.0" text="dummyHighscore">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="93.0" layoutY="163.0" prefHeight="31.0" prefWidth="193.0" text="Number of games played">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="297.0" layoutY="163.0" prefHeight="31.0" prefWidth="146.0" text="dummynumber">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Button layoutY="1.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="31.0" prefWidth="66.0" text="&lt;-" />
+   </children>
+</AnchorPane>

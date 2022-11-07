@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -52,11 +53,35 @@ public class Dashboard extends Application {
         stage.setScene(scene);
         stage.show();
     }
-    public void profileImageClicked(){
-        System.out.println("Profile Image has been clicked");
+    public void profileImageClicked(MouseEvent event){
+        //System.out.println("Profile Image has been clicked");
+        FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("ProfileView.fxml"));
+        Stage stage=(Stage)((Node)event.getSource()).getScene().getWindow();
+
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load(), 950, 570);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        stage.setScene(scene);
+        stage.show();
+
     }
-    public void leaderboardImageClicked(){
-        System.out.println("Leaderboard image has been clicked");
+    public void leaderboardImageClicked(MouseEvent event){
+        FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("LeaderBoard.fxml"));
+        Stage stage=(Stage)((Node)event.getSource()).getScene().getWindow();
+
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load(), 950, 570);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        stage.setScene(scene);
+        stage.show();
     }
 
     public static void main(String[] args) {
