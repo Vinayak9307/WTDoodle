@@ -24,12 +24,12 @@
             </Text>
             <Button fx:id="hostButton" layoutX="368.0" layoutY="163.0" mnemonicParsing="false" onAction="#hostButtonOnAction" prefHeight="30.0" prefWidth="174.0" text="host" />
             <Button fx:id="joinButton" layoutX="368.0" layoutY="285.0" mnemonicParsing="false" onAction="#joinButtonOnAction" prefHeight="30.0" prefWidth="174.0" text="join" />
-            <ImageView fx:id="profilePic" fitHeight="66.0" fitWidth="82.0" layoutX="35.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true" onMouseReleased="#profileImageClicked">
+            <ImageView fx:id="profilePic" fitHeight="66.0" fitWidth="82.0" layoutX="35.0" layoutY="29.0" onMouseClicked="#profileImageClicked" onMouseReleased="#profileImageClicked" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@Images/profilePic.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="leaderboard" fitHeight="66.0" fitWidth="75.0" layoutX="35.0" layoutY="481.0" pickOnBounds="true" preserveRatio="true" onMouseReleased="#leaderboardImageClicked">
+            <ImageView fx:id="leaderboard" fitHeight="66.0" fitWidth="75.0" layoutX="35.0" layoutY="481.0" onMouseReleased="#leaderboardImageClicked" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@Images/leaderboard.png" />
                </image>
