@@ -90,7 +90,7 @@ public class OtherLobby extends Application implements Initializable {
             @Override
             public void run() {
                 Label lb = (Label) anchorPane.lookup("#lb_players");
-                lb.setText(players);
+                lb.setText("hello"+players);
             }
         });
     }

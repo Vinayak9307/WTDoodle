@@ -33,6 +33,8 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static java.lang.System.exit;
+
 public class Player extends Application implements Initializable {
 
     public Canvas canvas;
@@ -56,7 +58,7 @@ public class Player extends Application implements Initializable {
     public static void showWordSelectionButtons(String message, AnchorPane ap_main) {
         if(ptoSBridge.isDrawer()) {
             String[] threeWords = message.split(" ");
-            Button bt1 = new Button();
+            Button bt1= new Button();
             bt1.setId("chooseButton1");
             bt1.setLayoutX(211);
             bt1.setLayoutY(108);
@@ -275,5 +277,6 @@ public class Player extends Application implements Initializable {
     @Override
     public void stop(){
         ptoSBridge.sendMessageToServer(new Message(Message.TYPE.CLOSE_CONNECTION,ptoSBridge.getPlayerID(),"Close Connection."));
+        exit(0);
     }
 }
