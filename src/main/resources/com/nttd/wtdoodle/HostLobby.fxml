@@ -5,9 +5,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap_main" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.HostLobby">
-    <Button fx:id="bt_start" layoutX="269.0" layoutY="288.0" mnemonicParsing="false" text="Start" />
-    <Label fx:id="lb_players" layoutX="43.0" layoutY="48.0" text="Label" />
+<AnchorPane fx:id="ap_main" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.HostLobby">
+    <Button fx:id="bt_start" layoutX="269.0" layoutY="288.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="66.0" text="Start">
+      <font>
+         <Font size="18.0" />
+      </font></Button>
+    <Label fx:id="lb_players" layoutX="48.0" layoutY="61.0" prefHeight="26.0" prefWidth="48.0" text="Label">
+      <font>
+         <Font size="15.0" />
+      </font></Label>
    <Label layoutX="332.0" layoutY="161.0" text="Host IP">
       <font>
          <Font name="Ubuntu Bold" size="15.0" />
@@ -28,4 +34,9 @@
          <Font name="Ubuntu Bold" size="15.0" />
       </font>
    </Label>
+   <Button layoutX="5.0" layoutY="8.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="36.0" prefWidth="66.0" text="&lt;-">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Button>
 </AnchorPane>
