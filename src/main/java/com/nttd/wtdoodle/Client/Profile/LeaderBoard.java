@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -50,6 +51,7 @@ public class LeaderBoard implements Initializable {
     }
     private Label createLabel(String s){
         Label label=new Label(s);
+        label.setFont(Font.font("Verdana",15));
         return label;
     }
 }
