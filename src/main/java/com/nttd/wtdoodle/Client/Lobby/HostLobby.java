@@ -29,8 +29,8 @@ public class HostLobby extends Application implements Initializable {
     public Label lb_hostIp;
     public Label lb_portNo;
     public Label lb_players;
-    public AnchorPane ap_main;
     public Button bt_start;
+    public AnchorPane ap_main;
     String[] joinCode;
     PtoSBridge ptoSBridge;
 
@@ -53,12 +53,6 @@ public class HostLobby extends Application implements Initializable {
         lb_hostIp.setText(hostIp);
         String portNo = joinCode[1];
         lb_portNo.setText(portNo);
-
-        bt_start.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-            }
-        });
 
         try {
             ptoSBridge = new PtoSBridge(new Socket(hostIp,Integer.parseInt(portNo)),true,ap_main);

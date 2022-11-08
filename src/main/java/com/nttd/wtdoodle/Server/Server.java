@@ -16,7 +16,7 @@ public class Server {
     public Server(){
         try {
             System.out.println("=====MAIN SERVER=====");
-            serverSocket = new ServerSocket(4321);
+            serverSocket = new ServerSocket(9936);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -34,5 +34,10 @@ public class Server {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+    }
+
+    public static void main(String[] args) {
+        Server server = new Server();
+        server.acceptConnections();
     }
 }

@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane prefHeight="557.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Login.registerController">
+<AnchorPane fx:id="ap_main" prefHeight="557.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Login.RegisterController">
     <children>
         <AnchorPane prefHeight="60.0" prefWidth="600.0" style="-fx-background-color: #E96151;">
             <children>
@@ -33,7 +33,7 @@
                 <Font size="14.0" />
             </font>
         </Button>
-        <Button fx:id="closeButton" layoutX="86.0" layoutY="503.0" mnemonicParsing="false" onAction="#closeButtonOnAction" prefHeight="30.0" prefWidth="435.0" style="-fx-background-color: #E96151;" text="Close" textFill="WHITE">
+        <Button fx:id="closeButton" layoutX="86.0" layoutY="503.0" mnemonicParsing="false" onAction="#closeButtonOnAction" prefHeight="30.0" prefWidth="435.0" style="-fx-background-color: #E96151;" text="Back" textFill="WHITE">
             <font>
                 <Font size="14.0" />
             </font>
