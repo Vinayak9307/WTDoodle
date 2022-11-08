@@ -25,5 +25,10 @@
             <Font name="Ubuntu Bold" size="13.0" />
          </font>
       </Label>
+      <Button layoutX="5.0" layoutY="8.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="36.0" prefWidth="66.0" text="&lt;-">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

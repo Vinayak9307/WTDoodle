@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -112,5 +113,20 @@ public class HostLobby extends Application implements Initializable {
 
     public void stop(){
         exit(0);
+    }
+
+    public void goToDashboard(ActionEvent event) {
+        FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
+        Stage stage=(Stage)((Node)event.getSource()).getScene().getWindow();
+
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load(), 950, 570);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        stage.setScene(scene);
+        stage.show();
     }
 }

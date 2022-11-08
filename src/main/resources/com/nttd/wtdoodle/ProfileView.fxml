@@ -6,6 +6,8 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="570.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.Profile">
@@ -15,7 +17,18 @@
                <Image url="@Images/profilePic.png" />
            </image>
        </ImageView>
-      <ScrollPane layoutX="243.0" layoutY="242.0" prefHeight="305.0" prefWidth="478.0" />
+      <ScrollPane layoutX="243.0" layoutY="242.0" prefHeight="306.0" prefWidth="511.0">
+         <content>
+            <GridPane fx:id="gridPane">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+            </GridPane>
+         </content></ScrollPane>
       <Label layoutX="196.0" layoutY="54.0" prefHeight="31.0" prefWidth="90.0" text="Name">
          <font>
             <Font size="16.0" />
