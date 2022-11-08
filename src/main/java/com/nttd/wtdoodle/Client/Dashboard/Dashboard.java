@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +25,7 @@ import java.util.ResourceBundle;
 public class Dashboard extends Application implements Initializable {
     public ScrollPane friendList;
     public GridPane gridPane;
+    public Button bt_search;
 
     @Override
     public void start(Stage stage) throws Exception {

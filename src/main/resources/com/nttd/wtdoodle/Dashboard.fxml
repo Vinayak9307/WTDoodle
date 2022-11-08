@@ -48,7 +48,7 @@
                   <Image url="@Images/leaderboard.png" />
                </image>
             </ImageView>
-            <Button layoutX="639.0" layoutY="16.0" mnemonicParsing="false" onAction="#openSearch" text="search" />
+            <Button fx:id="bt_search" layoutX="639.0" layoutY="16.0" mnemonicParsing="false" text="search" />
          </children>
       </AnchorPane>
    </children>
