@@ -1,6 +1,7 @@
 package com.nttd.wtdoodle.Client.Login;
 
 import com.nttd.wtdoodle.Client.Connections.CToSBridge;
+import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.ResourceLocator;
 import com.nttd.wtdoodle.Server.DatabaseConnection;
 import com.nttd.wtdoodle.SharedObjects.Message;
@@ -33,8 +34,8 @@ public class LoginController implements Initializable {
     private TextField username;
     @FXML
     private PasswordField password;
-    CToSBridge cToSBridge;
-
+    private CToSBridge cToSBridge;
+    User user;
     public static void goToDashboard(Node node) {
         Platform.runLater(new Runnable() {
             @Override
@@ -94,6 +95,7 @@ public class LoginController implements Initializable {
     //validating login credential
     public void validateLogin(){
         sendMessageToServer(new Message(Message.TYPE.LOGIN,0,username.getText()+","+password.getText()));
+        user.setUserName(username.getText());
     }
 
     private void sendMessageToServer(Message message) {
@@ -104,6 +106,7 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cToSBridge = CToSBridge.getInstance();
         cToSBridge.setHolder(loginMessageLabel);
+        user = User.getInstance();
     }
 
 

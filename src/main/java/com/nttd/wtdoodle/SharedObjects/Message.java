@@ -7,7 +7,9 @@ public class Message {
         REGISTER_SUCCESSFUL,
         REGISTER_UNSUCCESSFUL,
         LOGIN_SUCCESSFUL,
-        LOGIN_UNSUCCESSFUL
+        LOGIN_UNSUCCESSFUL,
+        SEND_USER_INFO,
+        REQUEST_USER_INFO
     }
 
     private TYPE type;

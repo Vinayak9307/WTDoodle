@@ -13,7 +13,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -129,5 +128,4 @@ public class Dashboard extends Application implements Initializable {
         label.setGraphic(circle);
         return label;
     }
-
 }

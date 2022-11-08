@@ -109,6 +109,31 @@ public class ClientHandler implements Runnable{
                 throw new RuntimeException(e);
             }
         }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.REQUEST_USER_INFO){
+            Connection connection = databaseConnection.getConnection();
+            String getUser = "SELECT * FROM user WHERE username = '" + data[2] + "'";
+            try {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(getUser);
+
+                while(resultSet.next()){
+                    int id = resultSet.getInt("userId");
+                    String name = resultSet.getString("name");
+                    String username = resultSet.getString("username");
+                    String password = resultSet.getString("password");
+                    String email = resultSet.getString("email");
+                    int highScore = resultSet.getInt("totalScore");
+                    int gamesPlayed = resultSet.getInt("totalGamesPlayed");
+
+                    sendMessageToClient(new Message(Message.TYPE.SEND_USER_INFO,0,
+                            id +","+ name +","+ username +","+ password +","+ email+","+highScore+","+gamesPlayed));
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
     public void sendMessageToClient(Message m){
         try {

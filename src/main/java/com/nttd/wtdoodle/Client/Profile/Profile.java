@@ -1,5 +1,6 @@
 package com.nttd.wtdoodle.Client.Profile;
 
+import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.ResourceLocator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,12 @@ import java.util.ResourceBundle;
 public class Profile implements Initializable {
 
     public GridPane gridPane;
+    public Label l_nGamePlayed;
+    public Label l_name;
+    public Label l_totalScore;
+    public Label l_userName;
+    public Label l_email;
+    User user;
 
     public void goToDashboard(ActionEvent event) {
         FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
@@ -34,6 +41,12 @@ public class Profile implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        user = User.getInstance();
+        l_name.setText(user.getName());
+        l_userName.setText(user.getUserName());
+        l_email.setText(user.getEmail());
+        l_nGamePlayed.setText(String.valueOf(user.getGamesPlayed()));
+        l_totalScore.setText(String.valueOf(user.getTotalScore()));
         /*
         Get leaderboard data here;
          */
