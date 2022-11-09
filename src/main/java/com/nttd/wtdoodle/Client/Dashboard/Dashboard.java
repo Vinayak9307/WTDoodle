@@ -6,6 +6,7 @@ import com.nttd.wtdoodle.ResourceLocator;
 import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -107,7 +108,7 @@ public class Dashboard implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cToSBridge = CToSBridge.getInstance();
         user = User.getInstance();
-        cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_GAME_HISTORY,user.getUserId(),user.getUserName()));
+        cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_GAME_HISTORY,99,user.getUserName()));
 
         /*
         bring friend list and add in scroll pane  , make necessary changes in the dummy structure
@@ -115,6 +116,25 @@ public class Dashboard implements Initializable {
         gridPane.add(createLabel("Friends"),1,0);
         gridPane.addRow(1,isOnline(true),createLabel("sameer"));
         gridPane.addRow(2,isOnline(false),createLabel("seer"));
+
+        bt_search.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("searchFriend.fxml"));
+                Stage stage=new Stage();
+
+                Scene scene = null;
+                try {
+                    scene = new Scene(fxmlLoader.load());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                stage.setScene(scene);
+                stage.show();
+            }
+        });
+
     }
     private Label createLabel(String s){
         Label label=new Label(s);
