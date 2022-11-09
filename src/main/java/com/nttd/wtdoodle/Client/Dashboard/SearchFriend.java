@@ -79,7 +79,14 @@ public class SearchFriend implements Initializable {
                 function to check if the username exists
                  */
                 if(!tf_friend.getText().isEmpty()) {
-                    cToSBridge.sendMessageToServer(new Message(Message.TYPE.FIND_USER, user.getUserId(),tf_friend.getText()));
+                    if (!tf_friend.getText().equals(user.getUserName())) {
+                        cToSBridge.sendMessageToServer(new Message(Message.TYPE.FIND_USER, user.getUserId(), tf_friend.getText()));
+                    }
+                    else{
+                        l_search.setText("You are searching yourSelf.");
+                    }
+                }else {
+                    l_search.setText("Please enter a username.");
                 }
             }
         });

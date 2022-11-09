@@ -102,6 +102,7 @@ public class Dashboard implements Initializable {
         user = User.getInstance();
         RequestClass.getInstance().setSenderUserName(user.getUserName());
         cToSBridge = CToSBridge.getInstance();
+        cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_FRIEND_REQUESTS,99,user.getUserName()));
         cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_GAME_HISTORY,99,user.getUserName()));
         cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_LEADERBOARD,99,user.getUserName()));
 

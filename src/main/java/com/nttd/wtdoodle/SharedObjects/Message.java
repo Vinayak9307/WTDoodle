@@ -17,7 +17,11 @@ public class Message {
         FIND_USER,
         USER_FOUND,
         USER_NOT_FOUND,
-        SEND_REQUEST
+        SEND_REQUEST,
+        REQUEST_FRIEND_REQUESTS,
+        FRIEND_REQUESTS,
+        ADD_FRIEND,
+        DELETE_REQUEST
     }
 
     private TYPE type;

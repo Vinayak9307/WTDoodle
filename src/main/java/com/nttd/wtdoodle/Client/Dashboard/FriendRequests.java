@@ -1,5 +1,10 @@
 package com.nttd.wtdoodle.Client.Dashboard;
 
+import com.nttd.wtdoodle.Client.Connections.CToSBridge;
+import com.nttd.wtdoodle.Client.Models.FriendRequest;
+import com.nttd.wtdoodle.Client.Models.FriendRequestData;
+import com.nttd.wtdoodle.Client.Models.User;
+import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -11,21 +16,19 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class FriendRequests extends Application implements Initializable {
+public class FriendRequests  implements Initializable {
 
     public GridPane gridPane;
     public Button btn_close;
 
-
-    @Override
-    public void start(Stage stage) throws Exception {
-
-    }
+    User user;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        user = User.getInstance();
 
         btn_close.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -38,9 +41,11 @@ public class FriendRequests extends Application implements Initializable {
         /*
         loop through all friend request a person has , and call showRequest()
          */
-        String str[]={"saket","prashant","vinayak"};
-        for(int i=0;i< str.length;i++){
-            showRequest(i,str[0]);
+        FriendRequest friendRequest = FriendRequest.getInstance();
+        ArrayList<FriendRequestData> friendRequestData = friendRequest.getRequestData();
+        int count = 1;
+        for(FriendRequestData f : friendRequestData){
+            showRequest(count++ , f.getSenderName());
         }
     }
 
@@ -48,12 +53,13 @@ public class FriendRequests extends Application implements Initializable {
         Label label = new Label(s);
         Button accept = new Button();
         accept.setText("Accept");
+        CToSBridge cToSBridge = CToSBridge.getInstance();
         accept.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 // send server query to add element in friend table and remove the entry from request
-
-
+                cToSBridge.sendMessageToServer(new Message(Message.TYPE.ADD_FRIEND, user.getUserId(), user.getUserName() + ";" + s));
+                gridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) == (i+1));
             }
         });
 
@@ -62,6 +68,9 @@ public class FriendRequests extends Application implements Initializable {
             @Override
             public void handle(ActionEvent actionEvent) {
                 // only remove the data from request table
+                cToSBridge.sendMessageToServer(new Message(Message.TYPE.DELETE_REQUEST, user.getUserId(), user.getUserName() + ";" + s));
+                gridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) == (i+1));
+
             }
         });
 

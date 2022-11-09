@@ -1,5 +1,6 @@
 package com.nttd.wtdoodle.Server;
 
+import com.nttd.wtdoodle.Client.Models.FriendRequest;
 import com.nttd.wtdoodle.Client.Models.GameHistory;
 import com.nttd.wtdoodle.SharedObjects.Message;
 
@@ -208,6 +209,49 @@ public class ClientHandler implements Runnable{
                 throw new RuntimeException(e);
             }
         }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.REQUEST_FRIEND_REQUESTS){
+            Connection connection = databaseConnection.getConnection();
+            String query = "SELECT * FROM `request` WHERE name='" + data[2]+"'";
+            try {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+                StringBuilder send = new StringBuilder();
+                while(resultSet.next()){
+                    String senderName = resultSet.getString("request");
+                    send.append(senderName).append(";");
+                }
+                sendMessageToClient(new Message(Message.TYPE.FRIEND_REQUESTS,0,send.toString()));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.ADD_FRIEND){
+            Connection connection = databaseConnection.getConnection();
+            String []send = data[2].split(";");
+            String updateQuery1 = "INSERT INTO `friends`(`person`, `friend`) VALUES ('"+send[1]+"','"+send[0]+"')";
+            String updateQuery2 = "INSERT INTO `friends`(`person`, `friend`) VALUES ('"+send[0]+"','"+send[1]+"')";
+            String updateQuery3 = "DELETE FROM `request` WHERE name='"+send[0]+"' AND request='"+send[1]+"'";
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(updateQuery1);
+                statement.executeUpdate(updateQuery2);
+                statement.executeUpdate(updateQuery3);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.DELETE_REQUEST){
+            Connection connection = databaseConnection.getConnection();
+            String []send = data[2].split(";");
+            String updateQuery3 = "DELETE FROM `request` WHERE name='"+send[0]+"' AND request='"+send[1]+"'";
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(updateQuery3);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
 
 }
     public void sendMessageToClient(Message m){

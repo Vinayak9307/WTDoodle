@@ -95,7 +95,7 @@ public class CToSBridge implements Runnable{
             user.setGamesPlayed(Integer.parseInt(data[8]));
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_GAME_HISTORY){
-            if(!data[2].isEmpty()) {
+            if(data.length>2) {
                 String[] gameHistoryStr = data[2].split(";");
                 gameHistory = GameHistory.getInstance();
                 gameHistory.getGameHistories().clear();
@@ -107,14 +107,16 @@ public class CToSBridge implements Runnable{
                 }
             }
         }
-        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.LEADERBOARD){
-            String []leaderboardStr = data[2].split(";");
-            leaderBoard = LeaderBoardModel.getInstance();
-            leaderBoard.getLeaderBoardData().clear();
-            for(String s : leaderboardStr){
-                String [] leaderboardData = s.split(" ");
-                LeaderBoardData l = new LeaderBoardData(0,leaderboardData[0],Date.valueOf(leaderboardData[1]),Integer.parseInt(leaderboardData[2]));
-                leaderBoard.getLeaderBoardData().add(l);
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.LEADERBOARD) {
+            if (data.length>2) {
+                String[] leaderboardStr = data[2].split(";");
+                leaderBoard = LeaderBoardModel.getInstance();
+                leaderBoard.getLeaderBoardData().clear();
+                for (String s : leaderboardStr) {
+                    String[] leaderboardData = s.split(" ");
+                    LeaderBoardData l = new LeaderBoardData(0, leaderboardData[0], Date.valueOf(leaderboardData[1]), Integer.parseInt(leaderboardData[2]));
+                    leaderBoard.getLeaderBoardData().add(l);
+                }
             }
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_FOUND){
@@ -122,6 +124,16 @@ public class CToSBridge implements Runnable{
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_NOT_FOUND){
             SearchFriend.addLabel(holder , "User not Found !");
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.FRIEND_REQUESTS){
+            if(data.length > 2){
+                String[] senders = data[2].split(";");
+                FriendRequest friendRequest = FriendRequest.getInstance();
+                friendRequest.getRequestData().clear();
+                for(String s : senders){
+                    friendRequest.getRequestData().add(new FriendRequestData(s));
+                }
+            }
         }
 
     }
