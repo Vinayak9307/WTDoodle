@@ -3,6 +3,8 @@ package com.nttd.wtdoodle.Client.Dashboard;
 import com.nttd.wtdoodle.ResourceLocator;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -11,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -24,7 +27,11 @@ import java.util.ResourceBundle;
 public class Dashboard extends Application implements Initializable {
     public ScrollPane friendList;
     public GridPane gridPane;
-    public Button bt_search;
+
+    public Button btn_search;
+    public Button btn_join;
+    public AnchorPane ap_main;
+
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -95,6 +102,7 @@ public class Dashboard extends Application implements Initializable {
 
         stage.setScene(scene);
         stage.show();
+
     }
 
     public static void main(String[] args) {
@@ -110,6 +118,44 @@ public class Dashboard extends Application implements Initializable {
         gridPane.add(createLabel("Friends"),1,0);
         gridPane.addRow(1,isOnline(true),createLabel("sameer"));
         gridPane.addRow(2,isOnline(false),createLabel("seer"));
+
+        btn_search.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("searchFriend.fxml"));
+                Stage stage=new Stage();
+
+                Scene scene = null;
+                try {
+                    scene = new Scene(fxmlLoader.load());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                stage.setScene(scene);
+                stage.show();
+            }
+        });
+       /*
+        btn_join.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Join.fxml"));
+                Stage stage=(Stage)((Node)event.getSource()).getScene().getWindow();
+
+                Scene scene = null;
+                try {
+                    scene = new Scene(fxmlLoader.load());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                stage.setScene(scene);
+                stage.show();
+
+            }
+        });
+
+        */
     }
     private Label createLabel(String s){
         Label label=new Label(s);
