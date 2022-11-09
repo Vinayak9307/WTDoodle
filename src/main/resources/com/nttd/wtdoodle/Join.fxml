@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0" prefWidth="328.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Dashboard.Join">
+   <children>
+      <TextField fx:id="tf_gameCode" layoutX="58.0" layoutY="75.0" prefHeight="26.0" prefWidth="222.0" promptText="Please Enter Game Code Here" />
+      <Button fx:id="btn_join" layoutX="182.0" layoutY="120.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" text="Join">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="btn_cancel" layoutX="83.0" layoutY="119.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="64.0" text="Cancel" />
+   </children>
+</AnchorPane>
