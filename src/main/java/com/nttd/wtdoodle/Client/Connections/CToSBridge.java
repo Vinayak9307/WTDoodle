@@ -95,14 +95,16 @@ public class CToSBridge implements Runnable{
             user.setGamesPlayed(Integer.parseInt(data[8]));
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_GAME_HISTORY){
-            String []gameHistoryStr = data[2].split(";");
-            System.out.println(data);
-            for(int i = 0 ; i < gameHistoryStr.length ; i++){
-                String []gameHistoryData = gameHistoryStr[i].split(" ");
-                GameHistoryData g = new GameHistoryData(Integer.parseInt(gameHistoryData[0]),Date.valueOf(gameHistoryData[1]),
-                        0,gameHistoryData[2]);
-                gameHistory=GameHistory.getInstance();
-                gameHistory.getGameHistories().add(g);
+            if(!data[2].isEmpty()) {
+                String[] gameHistoryStr = data[2].split(";");
+                gameHistory = GameHistory.getInstance();
+                gameHistory.getGameHistories().clear();
+                for (int i = 0; i < gameHistoryStr.length; i++) {
+                    String[] gameHistoryData = gameHistoryStr[i].split(" ");
+                    GameHistoryData g = new GameHistoryData(Integer.parseInt(gameHistoryData[0]), Date.valueOf(gameHistoryData[1]),
+                            0, gameHistoryData[2]);
+                    gameHistory.getGameHistories().add(g);
+                }
             }
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.LEADERBOARD){

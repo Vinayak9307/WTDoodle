@@ -141,16 +141,16 @@ public class PlayerHandler implements Runnable {
             System.out.println("IOException in sMTC(). Reassigning Streams.");
         }
     }
-    public void closeEverything(Socket socket, ObjectOutputStream oos , ObjectInputStream ois){
+    public void closeEverything(){
         try {
-            if (socket != null) {
-                socket.close();
+            if (player != null) {
+                player.close();
             }
-            if (ois != null) {
-                ois.close();
+            if (bufferedWriter != null) {
+                bufferedWriter.close();
             }
-            if (oos != null) {
-                oos.close();
+            if (bufferedReader != null) {
+                bufferedReader.close();
             }
         }catch (IOException e){
             e.printStackTrace();

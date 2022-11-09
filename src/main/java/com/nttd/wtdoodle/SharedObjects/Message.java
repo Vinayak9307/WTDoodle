@@ -16,7 +16,8 @@ public class Message {
         LEADERBOARD,
         FIND_USER,
         USER_FOUND,
-        USER_NOT_FOUND
+        USER_NOT_FOUND,
+        SEND_REQUEST
     }
 
     private TYPE type;

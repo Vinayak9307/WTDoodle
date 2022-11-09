@@ -1,6 +1,7 @@
 package com.nttd.wtdoodle.Client.Dashboard;
 
 import com.nttd.wtdoodle.Client.Connections.CToSBridge;
+import com.nttd.wtdoodle.Client.Models.RequestClass;
 import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.ResourceLocator;
 import com.nttd.wtdoodle.SharedObjects.Message;
@@ -29,10 +30,13 @@ public class SearchFriend implements Initializable {
     public AnchorPane ap_main;
     CToSBridge cToSBridge;
     User user;
+    RequestClass requestClass;
 
     public static void openFriendRequestDialog(Node node,String data){
         String []data1 = data.split(";");
-        System.out.println(data1[0]+ " " +data1[1]);
+        RequestClass requestClass = RequestClass.getInstance();
+        requestClass.setReceiverName(data1[0]);
+        requestClass.setReceiverUserName(data1[1]);
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -67,6 +71,7 @@ public class SearchFriend implements Initializable {
         cToSBridge = CToSBridge.getInstance();
         cToSBridge.setHolder(ap_main);
         user = User.getInstance();
+        requestClass = RequestClass.getInstance();
         btn_search.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 
 import static java.lang.System.exit;
 
-public class HostLobby extends Application implements Initializable {
+public class HostLobby implements Initializable {
 
     public Label lb_hostIp;
     public Label lb_portNo;
@@ -34,21 +34,13 @@ public class HostLobby extends Application implements Initializable {
     public AnchorPane ap_main;
     String[] joinCode;
     PtoSBridge ptoSBridge;
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("HostLobby.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 500);
-        stage.setTitle("HostLobby");
-        stage.setScene(scene);
-        stage.show();
-    }
-
+    GameServer gameServer;
+    Thread gameServerThread;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        GameServer gameServer = new GameServer(ap_main);
+        gameServer = new GameServer(ap_main);
         joinCode = gameServer.getJoinCode().split(",");
-        Thread gameServerThread = new Thread(gameServer);
+        gameServerThread = new Thread(gameServer);
         gameServerThread.start();
         String hostIp = removeLeadingFSlash(joinCode[0]);
         lb_hostIp.setText(hostIp);
@@ -101,15 +93,14 @@ public class HostLobby extends Application implements Initializable {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        launch();
-    }
 
     public void stop(){
         exit(0);
     }
 
     public void goToDashboard(ActionEvent event) {
+        gameServer.close();
+        gameServerThread.interrupt();
         FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
         Stage stage=(Stage)((Node)event.getSource()).getScene().getWindow();
 

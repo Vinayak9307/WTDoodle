@@ -1,6 +1,7 @@
 package com.nttd.wtdoodle.Client.Dashboard;
 
 import com.nttd.wtdoodle.Client.Connections.CToSBridge;
+import com.nttd.wtdoodle.Client.Models.RequestClass;
 import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.ResourceLocator;
 import com.nttd.wtdoodle.SharedObjects.Message;
@@ -32,15 +33,6 @@ public class Dashboard implements Initializable {
     public Button bt_search;
     CToSBridge cToSBridge;
     User user;
-
-//    @Override
-//    public void start(Stage stage) throws Exception {
-//        FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
-//        Scene scene = new Scene(fxmlLoader.load(), 950, 570);
-//        stage.initStyle(StageStyle.DECORATED);
-//        stage.setScene(scene);
-//        stage.show();
-//    }
     public void hostButtonOnAction(ActionEvent event){
        // System.out.println("host button has been clicked");
         FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("HostLobby.fxml"));
@@ -106,9 +98,11 @@ public class Dashboard implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        cToSBridge = CToSBridge.getInstance();
         user = User.getInstance();
+        RequestClass.getInstance().setSenderUserName(user.getUserName());
+        cToSBridge = CToSBridge.getInstance();
         cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_GAME_HISTORY,99,user.getUserName()));
+        cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_LEADERBOARD,99,user.getUserName()));
 
         /*
         bring friend list and add in scroll pane  , make necessary changes in the dummy structure

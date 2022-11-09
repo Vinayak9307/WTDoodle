@@ -43,6 +43,7 @@ public class GameServer implements Runnable{
     WordGenerator wordGenerator;    //Helper object that return three magical words XD
     String randomThreeWords;        //three magical words :p
     int remainingTime;
+    Thread gameThread;
 
     /*Method to select new drawer by the given index*/
     private void setDrawer(int drawerIndex) {
@@ -52,10 +53,10 @@ public class GameServer implements Runnable{
 
     /*Method to start new game*/
     public void startNewGame() {
-        new Thread(new Runnable() {
+        gameThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(numRounds < maxRounds) {
+                while(numRounds < maxRounds && !Thread.currentThread().isInterrupted()) {
                     sendClearScreenMessage();
                     setRemainingTime(20);
                     setCurrentWordSelected(false);
@@ -83,7 +84,8 @@ public class GameServer implements Runnable{
                 }
 
             }
-        }).start();
+        });
+        gameThread.start();
     }
     public void sendClearScreenMessage(){
         PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
@@ -228,7 +230,30 @@ public class GameServer implements Runnable{
 
     @Override
     public void run() {
-        acceptConnection();
+        if(!Thread.currentThread().isInterrupted())
+            acceptConnection();
+    }
+
+    public void close() {
+        if(serverSocket != null){
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if(players != null){
+            for(PlayerHandler playerHandler : players){
+                playerHandler.closeEverything();
+            }
+            players.clear();
+        }
+        if(gameThread != null){
+            if(gameThread.isAlive()){
+                gameThread.interrupt();
+            }
+        }
+        System.out.println("Game Server Closed.");
     }
 
 
