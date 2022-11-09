@@ -96,6 +96,7 @@ public class CToSBridge implements Runnable{
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_GAME_HISTORY){
             String []gameHistoryStr = data[2].split(";");
+            System.out.println(data);
             for(int i = 0 ; i < gameHistoryStr.length ; i++){
                 String []gameHistoryData = gameHistoryStr[i].split(" ");
                 GameHistoryData g = new GameHistoryData(Integer.parseInt(gameHistoryData[0]),Date.valueOf(gameHistoryData[1]),

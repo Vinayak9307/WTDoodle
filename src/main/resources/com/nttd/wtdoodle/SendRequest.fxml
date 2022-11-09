@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="216.0" prefWidth="322.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Dashboard.SendRequest">
+   <children>
+      <Label layoutX="79.0" layoutY="79.0" prefHeight="35.0" prefWidth="177.0" text="username ; Name ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="71.0" layoutY="44.0" prefHeight="35.0" prefWidth="178.0" text="Send request to ">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Label>
+      <Button fx:id="btn_Cancel" layoutX="45.0" layoutY="131.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="88.0" text="Cancel" />
+      <Button layoutX="168.0" layoutY="131.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="88.0" text="Confirm" />
+   </children>
+</AnchorPane>
