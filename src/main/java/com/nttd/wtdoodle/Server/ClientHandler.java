@@ -150,7 +150,6 @@ public class ClientHandler implements Runnable{
                     sc.append(id).append(" ").append(date).append(" ").append(winner);
                     send.append(sc.toString()).append(";");
                 }
-                System.out.println(send);
                 sendMessageToClient(new Message(Message.TYPE.USER_GAME_HISTORY , 0 , send.toString()));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -180,6 +179,23 @@ public class ClientHandler implements Runnable{
                 throw new RuntimeException(e);
             }
 
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.FIND_USER){
+            Connection connection = databaseConnection.getConnection();
+            String findUser = "SELECT count(1),user.username,user.name FROM user WHERE username = '" + data[2] + "'";
+            try {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(findUser);
+                while(resultSet.next()) {
+                    if (resultSet.getInt(1) == 1) {
+                        sendMessageToClient(new Message(Message.TYPE.USER_FOUND, 0, resultSet.getString("name") + ";" + resultSet.getString("username")));
+                    } else {
+                        sendMessageToClient(new Message(Message.TYPE.USER_NOT_FOUND, 0, " "));
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 }
     public void sendMessageToClient(Message m){

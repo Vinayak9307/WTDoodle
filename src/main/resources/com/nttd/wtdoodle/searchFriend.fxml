@@ -5,11 +5,11 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="207.0" prefWidth="316.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Dashboard.SearchFriend">
+<AnchorPane fx:id="ap_main" prefHeight="207.0" prefWidth="316.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Dashboard.SearchFriend">
    <children>
-      <TextField layoutX="83.0" layoutY="65.0" promptText="Enter username" />
-      <Button fx:id="btn_search" layoutX="132.0" layoutY="104.0" mnemonicParsing="false" text="Button" />
-      <Label layoutX="107.0" layoutY="25.0" prefHeight="32.0" prefWidth="102.0" text="  Search Friends" />
+      <TextField fx:id="tf_friend" layoutX="73.0" layoutY="66.0" promptText="Enter username" />
+      <Button fx:id="btn_search" layoutX="127.0" layoutY="104.0" mnemonicParsing="false" text="Search" />
+      <Label layoutX="101.0" layoutY="30.0" text="  Search Friends" />
+      <Label fx:id="l_search" layoutX="140.0" layoutY="148.0" />
    </children>
 </AnchorPane>

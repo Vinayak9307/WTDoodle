@@ -13,7 +13,10 @@ public class Message {
         REQUEST_USER_GAME_HISTORY,
         USER_GAME_HISTORY,
         REQUEST_LEADERBOARD,
-        LEADERBOARD
+        LEADERBOARD,
+        FIND_USER,
+        USER_FOUND,
+        USER_NOT_FOUND
     }
 
     private TYPE type;

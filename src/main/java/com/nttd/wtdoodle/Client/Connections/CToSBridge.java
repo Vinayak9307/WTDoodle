@@ -1,5 +1,6 @@
 package com.nttd.wtdoodle.Client.Connections;
 
+import com.nttd.wtdoodle.Client.Dashboard.SearchFriend;
 import com.nttd.wtdoodle.Client.Login.LoginController;
 import com.nttd.wtdoodle.Client.Login.RegisterController;
 import com.nttd.wtdoodle.Client.Models.*;
@@ -113,6 +114,12 @@ public class CToSBridge implements Runnable{
                 LeaderBoardData l = new LeaderBoardData(0,leaderboardData[0],Date.valueOf(leaderboardData[1]),Integer.parseInt(leaderboardData[2]));
                 leaderBoard.getLeaderBoardData().add(l);
             }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_FOUND){
+            SearchFriend.openFriendRequestDialog(holder , data[2]);
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_NOT_FOUND){
+            SearchFriend.addLabel(holder , "User not Found !");
         }
 
     }

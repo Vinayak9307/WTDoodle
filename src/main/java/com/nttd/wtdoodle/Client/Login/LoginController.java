@@ -3,15 +3,12 @@ package com.nttd.wtdoodle.Client.Login;
 import com.nttd.wtdoodle.Client.Connections.CToSBridge;
 import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.ResourceLocator;
-import com.nttd.wtdoodle.Server.DatabaseConnection;
 import com.nttd.wtdoodle.SharedObjects.Message;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -19,9 +16,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -108,7 +102,4 @@ public class LoginController implements Initializable {
         cToSBridge.setHolder(loginMessageLabel);
         user = User.getInstance();
     }
-
-
-    //public static void main(String[] args) {launch();}
 }
