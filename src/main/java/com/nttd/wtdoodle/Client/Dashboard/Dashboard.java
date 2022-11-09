@@ -31,6 +31,7 @@ public class Dashboard implements Initializable {
     public ScrollPane friendList;
     public GridPane gridPane;
     public Button bt_search;
+    public Button btn_FriendRequest;
     CToSBridge cToSBridge;
     User user;
     public void hostButtonOnAction(ActionEvent event){
@@ -126,6 +127,25 @@ public class Dashboard implements Initializable {
 
                 stage.setScene(scene);
                 stage.show();
+            }
+        });
+
+        btn_FriendRequest.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("FriendRequests.fxml"));
+                Stage stage=new Stage();
+
+                Scene scene = null;
+                try {
+                    scene = new Scene(fxmlLoader.load());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                stage.setScene(scene);
+                stage.show();
+
             }
         });
 
