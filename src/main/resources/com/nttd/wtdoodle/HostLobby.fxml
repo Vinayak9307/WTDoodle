@@ -5,36 +5,36 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap_main" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.HostLobby">
-    <Button fx:id="bt_start" layoutX="269.0" layoutY="288.0" mnemonicParsing="false" text="Start">
+<AnchorPane fx:id="ap_main" prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.HostLobby">
+    <Button fx:id="bt_start" layoutX="299.0" layoutY="292.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="327.0" style="-fx-background-color: #E96151;" text="Start" textFill="WHITE">
       <font>
          <Font size="18.0" />
       </font></Button>
-    <Label fx:id="lb_players" layoutX="48.0" layoutY="61.0" prefHeight="26.0" prefWidth="48.0" text="Label">
+    <Label fx:id="lb_players" layoutX="48.0" layoutY="61.0" prefHeight="40.0" prefWidth="134.0" text="Label">
       <font>
-         <Font size="15.0" />
+         <Font name="System Bold" size="17.0" />
       </font></Label>
-   <Label layoutX="332.0" layoutY="161.0" text="Host IP">
+   <Label layoutX="316.0" layoutY="164.0" prefHeight="26.0" prefWidth="81.0" text="Host IP">
       <font>
-         <Font name="Ubuntu Bold" size="15.0" />
+         <Font size="17.0" />
       </font>
    </Label>
-   <Label fx:id="lb_hostIp" layoutX="404.0" layoutY="161.0" prefHeight="16.0" prefWidth="165.0" text="Label">
+   <Label fx:id="lb_hostIp" layoutX="441.0" layoutY="155.0" prefHeight="40.0" prefWidth="166.0" text="Label">
       <font>
-         <Font name="Ubuntu Bold" size="15.0" />
+         <Font size="17.0" />
       </font>
    </Label>
-   <Label layoutX="332.0" layoutY="206.0" text="Port No">
+   <Label layoutX="316.0" layoutY="206.0" prefHeight="26.0" prefWidth="82.0" text="Port No">
       <font>
-         <Font name="Ubuntu Bold" size="15.0" />
+         <Font size="17.0" />
       </font>
    </Label>
-   <Label fx:id="lb_portNo" layoutX="404.0" layoutY="206.0" prefHeight="16.0" prefWidth="165.0" text="Label">
+   <Label fx:id="lb_portNo" layoutX="441.0" layoutY="206.0" prefHeight="40.0" prefWidth="166.0" text="Label">
       <font>
-         <Font name="Ubuntu Bold" size="15.0" />
+         <Font size="16.0" />
       </font>
    </Label>
-   <Button layoutX="5.0" layoutY="8.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="36.0" prefWidth="66.0" text="&lt;-">
+   <Button layoutY="-4.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="40.0" prefWidth="104.0" style="-fx-background-color: #E96151;" text="&lt;-" textFill="WHITE">
       <font>
          <Font size="16.0" />
       </font>

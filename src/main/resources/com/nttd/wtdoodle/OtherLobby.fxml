@@ -6,26 +6,32 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap_main" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.OtherLobby">
+<AnchorPane fx:id="ap_main" prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.OtherLobby">
    <children>
-      <Label fx:id="lb_players" layoutX="53.0" layoutY="58.0" text="Label" />
-      <TextField fx:id="tf_hostIp" layoutX="194.0" layoutY="142.0" promptText="Enter Host IP">
+      <Label fx:id="lb_players" layoutX="53.0" layoutY="58.0" prefHeight="30.0" prefWidth="126.0" text="Label">
          <font>
-            <Font name="Ubuntu Bold" size="13.0" />
+            <Font name="System Bold" size="17.0" />
+         </font></Label>
+      <TextField fx:id="tf_hostIp" layoutX="370.0" layoutY="172.0" prefHeight="30.0" prefWidth="206.0" promptText="Enter Host IP">
+         <font>
+            <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="tf_portNo" layoutX="194.0" layoutY="189.0" promptText="Enter Port Number">
+      <TextField fx:id="tf_portNo" layoutX="370.0" layoutY="227.0" prefHeight="30.0" prefWidth="206.0" promptText="Enter Port Number">
          <font>
-            <Font name="Ubuntu Bold" size="13.0" />
+            <Font size="14.0" />
          </font>
       </TextField>
-      <Button fx:id="bt_join" layoutX="245.0" layoutY="247.0" mnemonicParsing="false" text="Join" />
+      <Button fx:id="bt_join" layoutX="306.0" layoutY="303.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="334.0" style="-fx-background-color: #E96151;" text="Join" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font></Button>
       <Label fx:id="lb_update" layoutX="248.0" layoutY="306.0" prefWidth="36.0">
          <font>
             <Font name="Ubuntu Bold" size="13.0" />
          </font>
       </Label>
-      <Button layoutX="5.0" layoutY="8.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="36.0" prefWidth="66.0" text="&lt;-">
+      <Button layoutY="-5.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="44.0" prefWidth="102.0" style="-fx-background-color: #E96151;" text="&lt;-" textFill="WHITE">
          <font>
             <Font size="16.0" />
          </font>

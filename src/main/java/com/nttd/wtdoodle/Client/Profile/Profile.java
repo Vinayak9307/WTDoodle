@@ -12,8 +12,12 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
+import javax.swing.text.StyledEditorKit;
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -58,19 +62,29 @@ public class Profile implements Initializable {
         Get leaderboard data here;
          */
 
-        gridPane.addRow(0,createLabel("S.no"),createLabel("Game Id"),createLabel("Date"),createLabel("Score"),createLabel("Winner"));
+        gridPane.addRow(0,createHeaderLabel("S.no"),createHeaderLabel("Game Id"),createHeaderLabel("Date"),createHeaderLabel("Score"),createHeaderLabel("Winner"));
       /*
       loop through the leaderboard and add rows
        */
         ArrayList<GameHistoryData> gData = gameHistory.getGameHistories();
         int count = 1;
         for(GameHistoryData g : gData) {
-            gridPane.addRow(count,createLabel(count+""),createLabel(g.getId()+""),createLabel(g.getDate().toString()),createLabel(100+""),createLabel(g.getWinner()));
+            gridPane.addRow(count,createRowLabel(count+""),createRowLabel(g.getId()+""),createRowLabel(g.getDate().toString()),createRowLabel(100+""),createRowLabel(g.getWinner()));
             count++;
         }
     }
-    private Label createLabel(String s){
-        return new Label(s);
+    private Label createRowLabel(String s){
+        Label label = new Label(s);
+        label.setTextFill(Color.BLUE);
+
+        return label;
     }
+    private Label createHeaderLabel(String s){
+        Label label = new Label(s);
+        label.setTextFill(Color.RED);
+
+        return label;
+    }
+
 
 }
