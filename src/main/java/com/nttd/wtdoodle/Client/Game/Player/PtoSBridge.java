@@ -4,6 +4,7 @@ import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 import com.nttd.wtdoodle.Client.Lobby.OtherLobby;
+import com.nttd.wtdoodle.Client.Models.User;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -45,10 +46,12 @@ public class PtoSBridge {
     private AnchorPane ap_main;
     private GraphicsContext g;
     private VBox vBox;
+    User user;
 
 
     public PtoSBridge(Socket socket,boolean host,AnchorPane anchorPane){
         try {
+            user = User.getInstance();
             this.socket = socket;
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -62,8 +65,7 @@ public class PtoSBridge {
             System.out.println("Error sending Message to client");
             closeEverything(socket,oos,ois);
         }
-        Scanner sc = new Scanner(System.in);
-        playerName = sc.nextLine();
+        playerName = user.getUserName();
         this.isHost = host;
         sendMessageToServer(new Message(Message.TYPE.SET_NAME,playerID,playerName));
         ap_main = anchorPane;

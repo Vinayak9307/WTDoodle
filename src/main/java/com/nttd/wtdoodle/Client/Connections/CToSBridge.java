@@ -2,11 +2,14 @@ package com.nttd.wtdoodle.Client.Connections;
 
 import com.nttd.wtdoodle.Client.Login.LoginController;
 import com.nttd.wtdoodle.Client.Login.RegisterController;
+import com.nttd.wtdoodle.Client.Models.GameHistory;
+import com.nttd.wtdoodle.Client.Models.GameHistoryData;
 import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.scene.Node;
 import java.io.*;
 import java.net.Socket;
+import java.sql.Date;
 
 public class CToSBridge implements Runnable{
 
@@ -17,6 +20,7 @@ public class CToSBridge implements Runnable{
     BufferedWriter bufferedWriter;
     Node holder;
     User user;
+    GameHistory gameHistory;
 
     public static final CToSBridge instance = new CToSBridge();
     public CToSBridge(String ipAddress , int port){
@@ -69,7 +73,7 @@ public class CToSBridge implements Runnable{
     private void decodeMessage(String message){
         String[] data = message.split(",");
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.LOGIN_SUCCESSFUL){
-            sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_INFO,user.getUserId(),user.getUserName()));
+            sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_INFO,99,user.getUserName()));
             LoginController.goToDashboard(holder);
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.LOGIN_UNSUCCESSFUL){
@@ -81,7 +85,7 @@ public class CToSBridge implements Runnable{
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.REGISTER_UNSUCCESSFUL){
             RegisterController.addLabel(holder,data[2]);
         }
-        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.SEND_USER_INFO){
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_INFO){
             user.setUserId(Integer.parseInt(data[2]));
             user.setName(data[3]);
             user.setUserName(data[4]);
@@ -90,6 +94,17 @@ public class CToSBridge implements Runnable{
             user.setTotalScore(Integer.parseInt(data[7]));
             user.setGamesPlayed(Integer.parseInt(data[8]));
         }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_GAME_HISTORY){
+            String []gameHistoryStr = data[2].split(";");
+            for(int i = 0 ; i < gameHistoryStr.length ; i++){
+                String []gameHistoryData = gameHistoryStr[i].split(" ");
+                GameHistoryData g = new GameHistoryData(Integer.parseInt(gameHistoryData[0]),Date.valueOf(gameHistoryData[1]),
+                        0,gameHistoryData[2]);
+                gameHistory=GameHistory.getInstance();
+                gameHistory.getGameHistories().add(g);
+            }
+        }
+
     }
     public void sendMessageToServer(Message message){
         try {

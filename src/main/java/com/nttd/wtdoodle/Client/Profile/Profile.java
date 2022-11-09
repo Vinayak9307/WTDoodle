@@ -1,5 +1,8 @@
 package com.nttd.wtdoodle.Client.Profile;
 
+import com.nttd.wtdoodle.Client.Connections.CToSBridge;
+import com.nttd.wtdoodle.Client.Models.GameHistory;
+import com.nttd.wtdoodle.Client.Models.GameHistoryData;
 import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.ResourceLocator;
 import javafx.event.ActionEvent;
@@ -8,12 +11,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Profile implements Initializable {
@@ -25,6 +28,8 @@ public class Profile implements Initializable {
     public Label l_userName;
     public Label l_email;
     User user;
+    GameHistory gameHistory;
+    CToSBridge cToSBridge;
 
     public void goToDashboard(ActionEvent event) {
         FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
@@ -41,7 +46,9 @@ public class Profile implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        cToSBridge = CToSBridge.getInstance();
         user = User.getInstance();
+        gameHistory = GameHistory.getInstance();
         l_name.setText(user.getName());
         l_userName.setText(user.getUserName());
         l_email.setText(user.getEmail());
@@ -55,14 +62,15 @@ public class Profile implements Initializable {
       /*
       loop through the leaderboard and add rows
        */
-        for(int i=1;i<=10;i++) {
-            gridPane.addRow(i,createLabel(i+""),createLabel("5"+i+"3"),createLabel("Date"),createLabel(100-i+""),createLabel("Saket"));
-
+        ArrayList<GameHistoryData> gData = gameHistory.getGameHistories();
+        int count = 1;
+        for(GameHistoryData g : gData) {
+            gridPane.addRow(count,createLabel(count+""),createLabel(g.getId()+""),createLabel(g.getDate().toString()),createLabel(100+""),createLabel(g.getWinner()));
+            count++;
         }
     }
     private Label createLabel(String s){
-        Label label=new Label(s);
-        return label;
+        return new Label(s);
     }
 
 }

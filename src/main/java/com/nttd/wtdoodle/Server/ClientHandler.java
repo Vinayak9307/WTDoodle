@@ -1,13 +1,11 @@
 package com.nttd.wtdoodle.Server;
 
+import com.nttd.wtdoodle.Client.Models.GameHistory;
 import com.nttd.wtdoodle.SharedObjects.Message;
 
 import java.io.*;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class ClientHandler implements Runnable{
 
@@ -125,10 +123,35 @@ public class ClientHandler implements Runnable{
                     int highScore = resultSet.getInt("totalScore");
                     int gamesPlayed = resultSet.getInt("totalGamesPlayed");
 
-                    sendMessageToClient(new Message(Message.TYPE.SEND_USER_INFO,0,
+                    sendMessageToClient(new Message(Message.TYPE.USER_INFO,0,
                             id +","+ name +","+ username +","+ password +","+ email+","+highScore+","+gamesPlayed));
                 }
 
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.REQUEST_USER_GAME_HISTORY){
+            Connection connection = databaseConnection.getConnection();
+            String query = "SELECT game.gameId ,game.Date , game.winner FROM game,gameplayed WHERE gameplayed.gameId=game.gameId AND gameplayed.username='"+data[2]+"'";
+            try {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+
+                StringBuilder send = new StringBuilder();
+
+                while(resultSet.next()){
+                    int id = resultSet.getInt("gameId");
+                    Date date = resultSet.getDate("Date");
+                    String winner = resultSet.getString("winner");
+
+                    StringBuilder sc = new StringBuilder();
+                    sc.append(id).append(" ").append(date).append(" ").append(winner);
+                    send.append(sc.toString()).append(";");
+                }
+                System.out.println(send);
+                sendMessageToClient(new Message(Message.TYPE.USER_GAME_HISTORY , 0 , send.toString()));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

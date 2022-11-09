@@ -8,8 +8,10 @@ public class Message {
         REGISTER_UNSUCCESSFUL,
         LOGIN_SUCCESSFUL,
         LOGIN_UNSUCCESSFUL,
-        SEND_USER_INFO,
-        REQUEST_USER_INFO
+        USER_INFO,
+        REQUEST_USER_INFO,
+        REQUEST_USER_GAME_HISTORY,
+        USER_GAME_HISTORY
     }
 
     private TYPE type;

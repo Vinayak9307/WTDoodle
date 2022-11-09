@@ -1,6 +1,9 @@
 package com.nttd.wtdoodle.Client.Dashboard;
 
+import com.nttd.wtdoodle.Client.Connections.CToSBridge;
+import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.ResourceLocator;
+import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -19,21 +22,24 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.UnknownServiceException;
 import java.util.ResourceBundle;
 
-public class Dashboard extends Application implements Initializable {
+public class Dashboard implements Initializable {
     public ScrollPane friendList;
     public GridPane gridPane;
     public Button bt_search;
+    CToSBridge cToSBridge;
+    User user;
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 950, 570);
-        stage.initStyle(StageStyle.DECORATED);
-        stage.setScene(scene);
-        stage.show();
-    }
+//    @Override
+//    public void start(Stage stage) throws Exception {
+//        FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
+//        Scene scene = new Scene(fxmlLoader.load(), 950, 570);
+//        stage.initStyle(StageStyle.DECORATED);
+//        stage.setScene(scene);
+//        stage.show();
+//    }
     public void hostButtonOnAction(ActionEvent event){
        // System.out.println("host button has been clicked");
         FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("HostLobby.fxml"));
@@ -97,13 +103,12 @@ public class Dashboard extends Application implements Initializable {
         stage.show();
     }
 
-    public static void main(String[] args) {
-        launch();
-    }
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        cToSBridge = CToSBridge.getInstance();
+        user = User.getInstance();
+        cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_GAME_HISTORY,user.getUserId(),user.getUserName()));
+
         /*
         bring friend list and add in scroll pane  , make necessary changes in the dummy structure
          */
