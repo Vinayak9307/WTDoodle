@@ -108,7 +108,7 @@ public class Dashboard implements Initializable {
         cToSBridge = CToSBridge.getInstance();
         user = User.getInstance();
         cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_GAME_HISTORY,user.getUserId(),user.getUserName()));
-
+        cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_LEADERBOARD,user.getUserId(), user.getUserName()));
         /*
         bring friend list and add in scroll pane  , make necessary changes in the dummy structure
          */

@@ -11,7 +11,9 @@ public class Message {
         USER_INFO,
         REQUEST_USER_INFO,
         REQUEST_USER_GAME_HISTORY,
-        USER_GAME_HISTORY
+        USER_GAME_HISTORY,
+        REQUEST_LEADERBOARD,
+        LEADERBOARD
     }
 
     private TYPE type;

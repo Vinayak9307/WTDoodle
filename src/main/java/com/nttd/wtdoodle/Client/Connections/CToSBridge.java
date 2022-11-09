@@ -2,9 +2,7 @@ package com.nttd.wtdoodle.Client.Connections;
 
 import com.nttd.wtdoodle.Client.Login.LoginController;
 import com.nttd.wtdoodle.Client.Login.RegisterController;
-import com.nttd.wtdoodle.Client.Models.GameHistory;
-import com.nttd.wtdoodle.Client.Models.GameHistoryData;
-import com.nttd.wtdoodle.Client.Models.User;
+import com.nttd.wtdoodle.Client.Models.*;
 import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.scene.Node;
 import java.io.*;
@@ -21,6 +19,7 @@ public class CToSBridge implements Runnable{
     Node holder;
     User user;
     GameHistory gameHistory;
+    LeaderBoardModel leaderBoard;
 
     public static final CToSBridge instance = new CToSBridge();
     public CToSBridge(String ipAddress , int port){
@@ -96,12 +95,23 @@ public class CToSBridge implements Runnable{
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.USER_GAME_HISTORY){
             String []gameHistoryStr = data[2].split(";");
-            for(int i = 0 ; i < gameHistoryStr.length ; i++){
-                String []gameHistoryData = gameHistoryStr[i].split(" ");
-                GameHistoryData g = new GameHistoryData(Integer.parseInt(gameHistoryData[0]),Date.valueOf(gameHistoryData[1]),
-                        0,gameHistoryData[2]);
-                gameHistory=GameHistory.getInstance();
+            gameHistory = GameHistory.getInstance();
+            gameHistory.getGameHistories().clear();
+            for (String s : gameHistoryStr) {
+                String[] gameHistoryData = s.split(" ");
+                GameHistoryData g = new GameHistoryData(Integer.parseInt(gameHistoryData[0]), Date.valueOf(gameHistoryData[1]),
+                        0, gameHistoryData[2]);
                 gameHistory.getGameHistories().add(g);
+            }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.LEADERBOARD){
+            String []leaderboardStr = data[2].split(";");
+            leaderBoard = LeaderBoardModel.getInstance();
+            leaderBoard.getLeaderBoardData().clear();
+            for(String s : leaderboardStr){
+                String [] leaderboardData = s.split(" ");
+                LeaderBoardData l = new LeaderBoardData(0,leaderboardData[0],Date.valueOf(leaderboardData[1]),Integer.parseInt(leaderboardData[2]));
+                leaderBoard.getLeaderBoardData().add(l);
             }
         }
 

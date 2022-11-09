@@ -157,7 +157,31 @@ public class ClientHandler implements Runnable{
             }
 
         }
-    }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.REQUEST_LEADERBOARD) {
+            Connection connection = databaseConnection.getConnection();
+            String query = "SELECT * FROM globalleader ORDER BY totalScore DESC";
+
+            try {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+                StringBuilder send = new StringBuilder();
+
+                while(resultSet.next()){
+                    String userName = resultSet.getString("username");
+                    Date date = resultSet.getDate("date");
+                    int totalScore = resultSet.getInt("totalScore");
+
+                    StringBuilder sc = new StringBuilder();
+                    sc.append(userName).append(" ").append(date).append(" ").append(totalScore);
+                    send.append(sc.toString()).append(";");
+                }
+                sendMessageToClient(new Message(Message.TYPE.LEADERBOARD , 0 , send.toString()));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+}
     public void sendMessageToClient(Message m){
         try {
             bufferedWriter.write(m.toString());
