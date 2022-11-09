@@ -1,7 +1,5 @@
 package com.nttd.wtdoodle.Server;
 
-import com.nttd.wtdoodle.Client.Models.FriendRequest;
-import com.nttd.wtdoodle.Client.Models.GameHistory;
 import com.nttd.wtdoodle.SharedObjects.Message;
 
 import java.io.*;
@@ -251,8 +249,6 @@ public class ClientHandler implements Runnable{
                 throw new RuntimeException(e);
             }
         }
-
-
 }
     public void sendMessageToClient(Message m){
         try {

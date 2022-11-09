@@ -4,6 +4,7 @@ import com.nttd.wtdoodle.Client.Connections.CToSBridge;
 import com.nttd.wtdoodle.Client.Models.FriendRequest;
 import com.nttd.wtdoodle.Client.Models.FriendRequestData;
 import com.nttd.wtdoodle.Client.Models.User;
+import com.nttd.wtdoodle.Client.Utility.KeyPressHandler;
 import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -19,7 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class FriendRequests  implements Initializable {
+public class FriendRequests implements Initializable {
 
     public GridPane gridPane;
     public Button btn_close;
@@ -33,6 +34,7 @@ public class FriendRequests  implements Initializable {
         btn_close.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                KeyPressHandler.getInstance().setFriendRequestButtonClicked(false);
                 Stage stage=(Stage)((Node)event.getSource()).getScene().getWindow();
                 stage.close();
             }

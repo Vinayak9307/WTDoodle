@@ -64,4 +64,13 @@ public class User {
     public void setGamesPlayed(int gamesPlayed) {
         this.gamesPlayed = gamesPlayed;
     }
+    public void clear(){
+        this.userName = "";
+        this.email = "";
+        this.userId = 0;
+        this.password ="";
+        this.name ="";
+        this.totalScore=0;
+        this.gamesPlayed=0;
+    }
 }

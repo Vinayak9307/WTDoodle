@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 09, 2022 at 10:48 AM
+-- Generation Time: Nov 09, 2022 at 11:42 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -29,9 +29,17 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `friends` (
   `serialNum` int(255) NOT NULL,
-  `person` int(255) NOT NULL,
-  `friend` int(255) NOT NULL
+  `person` varchar(255) NOT NULL,
+  `friend` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `friends`
+--
+
+INSERT INTO `friends` (`serialNum`, `person`, `friend`) VALUES
+(7, 'codor07', 'vinayak9307'),
+(8, 'vinayak9307', 'codor07');
 
 -- --------------------------------------------------------
 
@@ -95,6 +103,15 @@ CREATE TABLE `globalleader` (
   `date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `globalleader`
+--
+
+INSERT INTO `globalleader` (`serialNum`, `username`, `totalScore`, `date`) VALUES
+(1, 'vinayak9307', 1000, '2022-11-09'),
+(2, 'prashant', 2121, '2022-11-09'),
+(3, 'socket', 20000, '2022-11-09');
+
 -- --------------------------------------------------------
 
 --
@@ -103,8 +120,8 @@ CREATE TABLE `globalleader` (
 
 CREATE TABLE `request` (
   `serialNum` int(255) NOT NULL,
-  `name` int(255) NOT NULL,
-  `request` int(255) NOT NULL
+  `name` varchar(255) NOT NULL,
+  `request` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -180,7 +197,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `friends`
 --
 ALTER TABLE `friends`
-  MODIFY `serialNum` int(255) NOT NULL AUTO_INCREMENT;
+  MODIFY `serialNum` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `game`
@@ -198,13 +215,13 @@ ALTER TABLE `gameplayed`
 -- AUTO_INCREMENT for table `globalleader`
 --
 ALTER TABLE `globalleader`
-  MODIFY `serialNum` bigint(255) NOT NULL AUTO_INCREMENT;
+  MODIFY `serialNum` bigint(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `request`
 --
 ALTER TABLE `request`
-  MODIFY `serialNum` int(255) NOT NULL AUTO_INCREMENT;
+  MODIFY `serialNum` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `user`

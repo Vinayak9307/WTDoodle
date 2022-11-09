@@ -1,8 +1,8 @@
 package com.nttd.wtdoodle.Client.Dashboard;
 
 import com.nttd.wtdoodle.Client.Connections.CToSBridge;
-import com.nttd.wtdoodle.Client.Models.RequestClass;
-import com.nttd.wtdoodle.Client.Models.User;
+import com.nttd.wtdoodle.Client.Models.*;
+import com.nttd.wtdoodle.Client.Utility.KeyPressHandler;
 import com.nttd.wtdoodle.ResourceLocator;
 import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,6 +33,7 @@ public class Dashboard implements Initializable {
     public GridPane gridPane;
     public Button bt_search;
     public Button btn_FriendRequest;
+    public Button btn_logout;
     CToSBridge cToSBridge;
     User user;
     public void hostButtonOnAction(ActionEvent event){
@@ -116,26 +118,61 @@ public class Dashboard implements Initializable {
         bt_search.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("searchFriend.fxml"));
-                Stage stage=new Stage();
-
-                Scene scene = null;
-                try {
-                    scene = new Scene(fxmlLoader.load());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                if (!KeyPressHandler.getInstance().isSearchButtonClicked()) {
+                    KeyPressHandler.getInstance().setSearchButtonClicked(true);
+                    FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("searchFriend.fxml"));
+                    Stage stage = new Stage();
+                    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent windowEvent) {
+                            KeyPressHandler.getInstance().setSearchButtonClicked(false);
+                        }
+                    });
+                    Scene scene = null;
+                    try {
+                        scene = new Scene(fxmlLoader.load());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    stage.setScene(scene);
+                    stage.show();
                 }
-
-                stage.setScene(scene);
-                stage.show();
             }
         });
 
         btn_FriendRequest.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("FriendRequests.fxml"));
-                Stage stage=new Stage();
+                if (!KeyPressHandler.getInstance().isFriendRequestButtonClicked()) {
+                    KeyPressHandler.getInstance().setFriendRequestButtonClicked(true);
+                    FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("FriendRequests.fxml"));
+                    Stage stage = new Stage();
+                    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent windowEvent) {
+                            KeyPressHandler.getInstance().setFriendRequestButtonClicked(false);
+                        }
+                    });
+                    Scene scene = null;
+                    try {
+                        scene = new Scene(fxmlLoader.load());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    stage.setScene(scene);
+                    stage.show();
+                }
+            }
+        });
+        btn_logout.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                User.getInstance().clear();
+                LeaderBoardModel.getInstance().getLeaderBoardData().clear();
+                GameHistory.getInstance().getGameHistories().clear();
+                FriendRequest.getInstance().getRequestData().clear();
+                FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Login.fxml"));
+                Stage stage=(Stage)((Node)event.getSource()).getScene().getWindow();
 
                 Scene scene = null;
                 try {
@@ -146,7 +183,6 @@ public class Dashboard implements Initializable {
 
                 stage.setScene(scene);
                 stage.show();
-
             }
         });
 

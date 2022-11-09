@@ -3,6 +3,7 @@ package com.nttd.wtdoodle.Client.Dashboard;
 import com.nttd.wtdoodle.Client.Connections.CToSBridge;
 import com.nttd.wtdoodle.Client.Models.RequestClass;
 import com.nttd.wtdoodle.Client.Models.User;
+import com.nttd.wtdoodle.Client.Utility.KeyPressHandler;
 import com.nttd.wtdoodle.ResourceLocator;
 import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
@@ -23,7 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SearchFriend implements Initializable {
+public class SearchFriend extends Application implements Initializable {
     public Button btn_search;
     public Label l_search;
     public TextField tf_friend;
@@ -90,5 +91,15 @@ public class SearchFriend implements Initializable {
                 }
             }
         });
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+
+    }
+
+    @Override
+    public void stop(){
+        KeyPressHandler.getInstance().setFriendRequestButtonClicked(false);
     }
 }
