@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="570.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.LeaderBoard">
+<AnchorPane prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.LeaderBoard">
    <children>
-      <ScrollPane layoutX="192.0" layoutY="202.0" prefHeight="338.0" prefWidth="596.0">
+      <ScrollPane layoutX="192.0" layoutY="202.0" prefHeight="338.0" prefWidth="596.0" style="-fx-background-color: #d7dade;">
          <content>
             <GridPane fx:id="gridPane" prefHeight="0.0" prefWidth="596.0">
               <columnConstraints>
@@ -22,12 +22,12 @@
             </GridPane>
          </content>
       </ScrollPane>
-      <Button mnemonicParsing="false" onAction="#goToDashboard" prefHeight="38.0" prefWidth="81.0" text="&lt;-">
+      <Button mnemonicParsing="false" onAction="#goToDashboard" prefHeight="38.0" prefWidth="81.0" style="-fx-background-color: #E96151;" text="&lt;-" textFill="WHITE">
          <font>
             <Font size="22.0" />
          </font>
       </Button>
-      <Label layoutX="370.0" layoutY="97.0" prefHeight="74.0" prefWidth="294.0" text="LeaderBoard">
+      <Label alignment="CENTER" layoutX="251.0" layoutY="97.0" prefHeight="74.0" prefWidth="478.0" style="-fx-background-color: #E96151;" text="LeaderBoard" textFill="WHITE">
          <font>
             <Font size="51.0" />
          </font>
