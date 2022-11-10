@@ -1,5 +1,6 @@
 package com.nttd.wtdoodle.Server;
 
+import com.nttd.wtdoodle.SharedObjects.GameSharable;
 import com.nttd.wtdoodle.SharedObjects.Message;
 
 import java.io.*;
@@ -13,6 +14,11 @@ public class ClientHandler implements Runnable{
     BufferedWriter bufferedWriter;
     BufferedReader bufferedReader;
     DatabaseConnection databaseConnection;
+    String userName;
+
+    public String getUserName() {
+        return userName;
+    }
 
     @Override
     public void run() {
@@ -55,6 +61,8 @@ public class ClientHandler implements Runnable{
                 while(resultSet.next()){
                     if(resultSet.getInt(1)==1){
                         sendMessageToClient(new Message(Message.TYPE.LOGIN_SUCCESSFUL,0,""));
+                        this.userName = data[2];
+                        server.getOnlinePlayers().add(userName);
                     }
                     else{
                         sendMessageToClient(new Message(Message.TYPE.LOGIN_UNSUCCESSFUL,0,""));
@@ -63,6 +71,10 @@ public class ClientHandler implements Runnable{
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.LOG_OUT){
+            server.getOnlinePlayers().removeIf(userName -> userName.equals(data[2]));
+            System.out.println(data[2] + " has logged out .");
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.REGISTER){
 
@@ -247,6 +259,59 @@ public class ClientHandler implements Runnable{
                 statement.executeUpdate(updateQuery3);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.ADD_GAME){
+            String[] gameInfo = data[2].split(";");
+            server.getRunningGames().add(new GameSharable(gameInfo[0],gameInfo[1],Integer.parseInt(gameInfo[2])));
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.DELETE_GAME){
+            server.getRunningGames().removeIf(g -> g.getGameCode().equals(data[2]));
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.SEARCH_GAME){
+            boolean found = false;
+            for (GameSharable g : server.getRunningGames()){
+                if(g.getGameCode().equals(data[2])){
+                    sendMessageToClient(new Message(Message.TYPE.GAME_FOUND,0,g.toString()));
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                sendMessageToClient(new Message(Message.TYPE.GAME_NOT_FOUND,0," "));
+            }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.REQUEST_FRIEND_LIST){
+            Connection connection = databaseConnection.getConnection();
+            String query = "SELECT friend FROM friends WHERE person='"+data[2]+"'";
+
+            try {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+                StringBuilder friends = new StringBuilder();
+                while(resultSet.next()){
+                    String friend = resultSet.getString("friend");
+                    friends.append(friend).append(" ");
+                    if(server.getOnlinePlayers().contains(friend)){
+                        friends.append("1");
+                    }else{
+                        friends.append("0");
+                    }
+                    friends.append(";");
+                }
+                sendMessageToClient(new Message(Message.TYPE.FRIEND_LIST,0,friends.toString()));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.SEND_GAME_INVITE){
+            String[] friendData = data[2].split(";");
+            if(server.getOnlinePlayers().contains(friendData[1])){
+                for(ClientHandler clientHandler : server.getClients()){
+                    if(clientHandler.getUserName().equals(friendData[1])){
+                        clientHandler.sendMessageToClient(new Message(Message.TYPE.GAME_INVITE,0,friendData[0]+";"+friendData[2]));
+                    }
+                }
             }
         }
 }

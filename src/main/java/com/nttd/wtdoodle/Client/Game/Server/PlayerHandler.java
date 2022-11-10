@@ -1,6 +1,6 @@
 package com.nttd.wtdoodle.Client.Game.Server;
 
-import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
+import com.nttd.wtdoodle.Client.Game.GameObjects.GameMessage;
 
 import java.io.*;
 import java.net.Socket;
@@ -48,13 +48,13 @@ public class PlayerHandler implements Runnable {
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            Message m = new Message(Message.TYPE.SET_ID,playerID,"Set Player ID.");
+            GameMessage m = new GameMessage(GameMessage.TYPE.SET_ID,playerID,"Set Player ID.");
             bufferedWriter.write(m.toString());
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
             String[] message = bufferedReader.readLine().split(",");
-            if(Message.TYPE.valueOf(message[0]) == Message.TYPE.SET_NAME) {
+            if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SET_NAME) {
                 this.playerName = message[2];
             }
         } catch (IOException e) {
@@ -87,7 +87,7 @@ public class PlayerHandler implements Runnable {
                         String m = bufferedReader.readLine();
                         String []message = m.split(",");
                         decodeMessage(m);
-                        if (Message.TYPE.valueOf(message[0]) != Message.TYPE.GUESS && Message.TYPE.valueOf(message[0]) != Message.TYPE.CLOSE_CONNECTION) {
+                        if (GameMessage.TYPE.valueOf(message[0]) != GameMessage.TYPE.GUESS && GameMessage.TYPE.valueOf(message[0]) != GameMessage.TYPE.CLOSE_CONNECTION) {
                             for (PlayerHandler client : game.getPlayers()) {
                                 if (client.equals(me)) continue;
                                 client.sendMessageToClient(m);
@@ -105,13 +105,13 @@ public class PlayerHandler implements Runnable {
 
     private void decodeMessage(String m) {
         String []message = m.split(",");
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.SET_CURRENT_WORD){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SET_CURRENT_WORD){
             game.setCurrentWordSelected(true);
             game.setCurrentWord(message[2]);
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.GUESS){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.GUESS){
             if(game.getCurrentWord().toLowerCase().equals(message[2].toLowerCase())){
-                game.sendMessageToAll(new Message(Message.TYPE.SUCCESSFULLY_GUESSED, Integer.parseInt(message[1]) ,playerName + " has guessed the word correctly ."));
+                game.sendMessageToAll(new GameMessage(GameMessage.TYPE.SUCCESSFULLY_GUESSED, Integer.parseInt(message[1]) ,playerName + " has guessed the word correctly ."));
                 setGuessed(true);
                 score += game.getIncrementScoreFactorForGuesser();
                 game.getDrawer().incrementScore(game.getIncrementScoreFactorForDrawer());
@@ -120,13 +120,13 @@ public class PlayerHandler implements Runnable {
                 System.out.println("Player #" + game.getDrawer().getPlayerID() + " " + game.getDrawer().getPlayerName() + " : " + game.getDrawer().getScore());
             }
             else{
-                game.sendMessageToAll(new Message(Message.TYPE.GUESS , Integer.parseInt(message[1]) , playerName + " has guessed " + message[2]));
+                game.sendMessageToAll(new GameMessage(GameMessage.TYPE.GUESS , Integer.parseInt(message[1]) , playerName + " has guessed " + message[2]));
             }
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.CLOSE_CONNECTION){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.CLOSE_CONNECTION){
             logTime();
             game.getPlayers().remove(Integer.parseInt(message[1])-1);
-            game.sendMessageToAll(new Message(Message.TYPE.GENERAL,Integer.parseInt(message[1]),playerName + " has left."));
+            game.sendMessageToAll(new GameMessage(GameMessage.TYPE.GENERAL,Integer.parseInt(message[1]),playerName + " has left."));
         }
     }
     public void sendMessageToClient(String message) {

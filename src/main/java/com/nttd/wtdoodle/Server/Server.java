@@ -1,5 +1,7 @@
 package com.nttd.wtdoodle.Server;
 
+import com.nttd.wtdoodle.SharedObjects.GameSharable;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,6 +10,12 @@ import java.util.ArrayList;
 public class Server {
     private ServerSocket serverSocket;
     private ArrayList<ClientHandler> clients = new ArrayList<>();
+    private ArrayList<GameSharable> runningGames = new ArrayList<>();
+    private ArrayList<String> onlinePlayers = new ArrayList<>();
+
+    public ArrayList<String> getOnlinePlayers() {
+        return onlinePlayers;
+    }
 
     public ArrayList<ClientHandler> getClients(){
         return clients;
@@ -39,5 +47,9 @@ public class Server {
     public static void main(String[] args) {
         Server server = new Server();
         server.acceptConnections();
+    }
+
+    public ArrayList<GameSharable> getRunningGames() {
+        return runningGames;
     }
 }

@@ -2,7 +2,7 @@ package com.nttd.wtdoodle.Client.Game.GameObjects;
 
 import java.io.Serializable;
 
-public class Message implements Serializable {
+public class GameMessage implements Serializable {
 
     public enum TYPE{
         START_GAME,
@@ -23,13 +23,13 @@ public class Message implements Serializable {
     private TYPE type;
     private int id;
     private String content;
-    public Message(){
+    public GameMessage(){
         id = 0;
         type = TYPE.GENERAL;
         content = "";
     }
 
-    public Message(TYPE type, int id, String content) {
+    public GameMessage(TYPE type, int id, String content) {
         this.type = type;
         this.id = id;
         this.content = content;

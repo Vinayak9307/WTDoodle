@@ -2,10 +2,13 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap_main" prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.HostLobby">
+<AnchorPane fx:id="ap_main" prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.HostLobby">
     <Button fx:id="bt_start" layoutX="299.0" layoutY="292.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="327.0" style="-fx-background-color: #E96151;" text="Start" textFill="WHITE">
       <font>
          <Font size="18.0" />
@@ -14,12 +17,12 @@
       <font>
          <Font name="System Bold" size="17.0" />
       </font></Label>
-   <Label layoutX="316.0" layoutY="164.0" prefHeight="26.0" prefWidth="81.0" text="Host IP">
+   <Label layoutX="316.0" layoutY="164.0" prefHeight="26.0" text="GameCode">
       <font>
          <Font size="17.0" />
       </font>
    </Label>
-   <Label fx:id="lb_hostIp" layoutX="441.0" layoutY="155.0" prefHeight="40.0" prefWidth="166.0" text="Label">
+   <Label fx:id="lb_gameCode" layoutX="441.0" layoutY="164.0" prefHeight="26.0" text="Label">
       <font>
          <Font size="17.0" />
       </font>
@@ -39,4 +42,19 @@
          <Font size="16.0" />
       </font>
    </Button>
+   <ScrollPane layoutX="671.0" layoutY="183.0" prefHeight="219.0" prefWidth="247.0">
+      <content>
+         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="216.0" prefWidth="244.0" style="-fx-background-color: #d7dade;">
+            <children>
+               <GridPane fx:id="gp_inviteList" layoutX="13.0" layoutY="20.0" prefHeight="26.0" prefWidth="226.0">
+                  <columnConstraints>
+                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="167.0" minWidth="10.0" prefWidth="148.0" />
+                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" prefWidth="78.0" />
+                  </columnConstraints>
+               </GridPane>
+            </children>
+         </AnchorPane>
+      </content>
+   </ScrollPane>
+   <Label layoutX="743.0" layoutY="152.0" text="INVITE FRIENDS" />
 </AnchorPane>

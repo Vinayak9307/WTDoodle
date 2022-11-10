@@ -1,11 +1,14 @@
 package com.nttd.wtdoodle.Client.Lobby;
 
-import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
+import com.nttd.wtdoodle.Client.Connections.CToSBridge;
+import com.nttd.wtdoodle.Client.Game.GameObjects.GameMessage;
 import com.nttd.wtdoodle.Client.Game.Player.Player;
 import com.nttd.wtdoodle.Client.Game.Player.PtoSBridge;
 import com.nttd.wtdoodle.Client.Game.Server.GameServer;
+import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.ResourceLocator;
-import javafx.application.Application;
+import com.nttd.wtdoodle.SharedObjects.GameSharable;
+import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,28 +31,36 @@ import static java.lang.System.exit;
 
 public class HostLobby implements Initializable {
 
-    public Label lb_hostIp;
     public Label lb_portNo;
     public Label lb_players;
     public Button bt_start;
     public AnchorPane ap_main;
-    String[] joinCode;
+    public Label lb_gameCode;
+    public GridPane gp_inviteList;
+    GameSharable joinCode;
     PtoSBridge ptoSBridge;
     GameServer gameServer;
     Thread gameServerThread;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         gameServer = new GameServer(ap_main);
-        joinCode = gameServer.getJoinCode().split(",");
+        joinCode = gameServer.getJoinCode();
+        System.out.println("Game Ip = " + joinCode.getIpAddress()) ;
         gameServerThread = new Thread(gameServer);
         gameServerThread.start();
-        String hostIp = removeLeadingFSlash(joinCode[0]);
-        lb_hostIp.setText(hostIp);
-        String portNo = joinCode[1];
-        lb_portNo.setText(portNo);
+        String gameCode = joinCode.getGameCode();
+        lb_gameCode.setText(gameCode);
+        String hostIp = removeLeadingFSlash(joinCode.getIpAddress());
+        joinCode.setIpAddress(hostIp);
+        int portNo = joinCode.getPortNo();
+        lb_portNo.setText(portNo + "");
+        CToSBridge cToSBridge = CToSBridge.getInstance();
+        cToSBridge.sendMessageToServer(new Message(Message.TYPE.ADD_GAME, User.getInstance().getUserId(),joinCode.toString()));
+
 
         try {
-            ptoSBridge = new PtoSBridge(new Socket(hostIp,Integer.parseInt(portNo)),true,ap_main);
+            ptoSBridge = PtoSBridge.getInstance();
+            ptoSBridge.startBridge(new Socket(hostIp,portNo),true,ap_main);
             ptoSBridge.receiveMessagesFromServer();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -57,9 +69,10 @@ public class HostLobby implements Initializable {
         bt_start.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                gameServer.sendMessageToAll(new Message(Message.TYPE.START_GAME,0,""));
+                gameServer.sendMessageToAll(new GameMessage(GameMessage.TYPE.START_GAME,0,""));
                 FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Player.fxml"));
                 Player.setPtoSBridge(ptoSBridge);
+                cToSBridge.sendMessageToServer(new Message(Message.TYPE.DELETE_GAME,0,joinCode.getGameCode()));
                 Stage gameScreen = (Stage)ap_main.getScene().getWindow();
                 Scene scene = null;
                 try {
@@ -73,6 +86,32 @@ public class HostLobby implements Initializable {
                 gameServer.startNewGame();
             }
         });
+
+
+
+        User user = User.getInstance();
+        int count = 0;
+        for(String onlineFriend : user.getOnlineFriends()){
+            showInvites(count,onlineFriend);
+            count++;
+        }
+    }
+
+    private void showInvites(int count, String onlineFriend) {
+        Label l = new Label(onlineFriend);
+        Button btn_invite = new Button();
+        btn_invite.setText("INVITE");
+        CToSBridge cToSBridge = CToSBridge.getInstance();
+        User user = User.getInstance();
+        btn_invite.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                // send server query to add element in friend table and remove the entry from request
+                cToSBridge.sendMessageToServer(new Message(Message.TYPE.SEND_GAME_INVITE, user.getUserId(), user.getUserName() + ";" + onlineFriend+";"+joinCode.getGameCode()));
+                gp_inviteList.getChildren().removeIf(node -> GridPane.getRowIndex(node) == (count+1));
+            }
+        });
+        gp_inviteList.addRow(count,l,btn_invite);
     }
 
     public static void updatePlayerLabel(String players , AnchorPane anchorPane){
@@ -101,6 +140,8 @@ public class HostLobby implements Initializable {
     public void goToDashboard(ActionEvent event) {
         gameServer.close();
         gameServerThread.interrupt();
+        CToSBridge cToSBridge = CToSBridge.getInstance();
+        cToSBridge.sendMessageToServer(new Message(Message.TYPE.DELETE_GAME, User.getInstance().getUserId(),joinCode.getGameCode()));
         FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("Dashboard.fxml"));
         Stage stage=(Stage)((Node)event.getSource()).getScene().getWindow();
 

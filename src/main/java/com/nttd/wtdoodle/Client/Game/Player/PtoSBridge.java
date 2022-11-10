@@ -1,6 +1,6 @@
 package com.nttd.wtdoodle.Client.Game.Player;
 
-import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
+import com.nttd.wtdoodle.Client.Game.GameObjects.GameMessage;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 import com.nttd.wtdoodle.Client.Lobby.OtherLobby;
@@ -14,7 +14,6 @@ import java.io.*;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 
 import static java.lang.System.exit;
 
@@ -47,16 +46,22 @@ public class PtoSBridge {
     private GraphicsContext g;
     private VBox vBox;
     User user;
+    public static final PtoSBridge instance = new PtoSBridge();
 
+    public PtoSBridge(){}
 
-    public PtoSBridge(Socket socket,boolean host,AnchorPane anchorPane){
+    public static PtoSBridge getInstance(){
+        return instance;
+    }
+
+    public void startBridge(Socket socket,boolean host,AnchorPane anchorPane){
         try {
             user = User.getInstance();
             this.socket = socket;
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String[] message = bufferedReader.readLine().split(",");
-            if(Message.TYPE.valueOf(message[0]) == Message.TYPE.SET_ID){
+            if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SET_ID){
                 playerID = Integer.parseInt(message[1]);
                 System.out.println("Player #"+playerID);
             }
@@ -67,14 +72,14 @@ public class PtoSBridge {
         }
         playerName = user.getUserName();
         this.isHost = host;
-        sendMessageToServer(new Message(Message.TYPE.SET_NAME,playerID,playerName));
+        sendMessageToServer(new GameMessage(GameMessage.TYPE.SET_NAME,playerID,playerName));
         ap_main = anchorPane;
     }
-    public void sendMessageToServer(Message message) {
+    public void sendMessageToServer(GameMessage gameMessage) {
         try {
 //            oos.writeObject(message);
 //            oos.flush();
-            bufferedWriter.write(message.toString());
+            bufferedWriter.write(gameMessage.toString());
             bufferedWriter.newLine();
             bufferedWriter.flush();
         }catch (IOException e){
@@ -103,22 +108,22 @@ public class PtoSBridge {
     public void decodeMessage(String m, GraphicsContext g , AnchorPane ap_main , VBox vBox) {
         String[] message = m.split(",");
 
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.NEW_PLAYER_JOINED){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.NEW_PLAYER_JOINED){
             if(!isHost){
                 OtherLobby.updatePlayerLabel(message[2],ap_main);
             }
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.START_GAME){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.START_GAME){
             if(!isHost){
                 OtherLobby.startGame(ap_main);
             }
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.PEN_POSITION){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.PEN_POSITION){
             PenColor pc = new PenColor(Double.parseDouble(message[6]),Double.parseDouble(message[7]),Double.parseDouble(message[8]));
             PenInfo p = new PenInfo(Double.parseDouble(message[2]),Double.parseDouble(message[3]),Double.parseDouble(message[4]),Boolean.parseBoolean(message[5]),pc);
             Player.drawOnCanvas(p,g);
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.SET_DRAWER){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SET_DRAWER){
             if(Integer.parseInt(message[1]) == playerID){
                 Player.addLabel("You are the new drawer",vBox);
                 drawer = true;
@@ -130,10 +135,10 @@ public class PtoSBridge {
                 drawer = false;
             }
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.SET_ID){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SET_ID){
             playerID = Integer.parseInt(message[1]);
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.WORD_SELECTION){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.WORD_SELECTION){
             if(Integer.parseInt(message[1]) == playerID){
                 Player.showWordSelectionButtons(message[2],ap_main);
             }
@@ -141,10 +146,10 @@ public class PtoSBridge {
                 Player.addLabel("Drawer is selecting a word .",vBox);
             }
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.GENERAL){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.GENERAL){
             Player.addLabel(message[2],vBox);
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.SUCCESSFULLY_GUESSED){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SUCCESSFULLY_GUESSED){
             if(Integer.parseInt(message[1])==playerID){
                 Player.addLabel("Hurray! You guessed it.",vBox);
                 guesser = false;
@@ -153,16 +158,16 @@ public class PtoSBridge {
                 Player.addLabel(message[2],vBox);
             }
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.GUESS){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.GUESS){
             if(Integer.parseInt(message[1]) != playerID){
                 Player.addLabel(message[2],vBox);
             }
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.UPDATE_TIMER){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.UPDATE_TIMER){
             Label label = (Label) ap_main.lookup("#l_timer");
             Player.setTimer(message[2],label);
         }
-        if(Message.TYPE.valueOf(message[0]) == Message.TYPE.SET_SCORE){
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SET_SCORE){
             Player.showScore(message[2],ap_main);
         }
     }

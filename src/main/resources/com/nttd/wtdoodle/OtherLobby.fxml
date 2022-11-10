@@ -6,35 +6,26 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap_main" prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.OtherLobby">
+<AnchorPane fx:id="ap_main" prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.OtherLobby">
    <children>
-      <Label fx:id="lb_players" layoutX="53.0" layoutY="58.0" prefHeight="30.0" prefWidth="126.0" text="Label">
+      <Label fx:id="lb_players" layoutX="53.0" layoutY="58.0" prefHeight="30.0" prefWidth="126.0">
          <font>
             <Font name="System Bold" size="17.0" />
          </font></Label>
-      <TextField fx:id="tf_hostIp" layoutX="370.0" layoutY="172.0" prefHeight="30.0" prefWidth="206.0" promptText="Enter Host IP">
+      <TextField fx:id="tf_gameCode" alignment="CENTER" layoutX="352.0" layoutY="239.0" prefHeight="30.0" prefWidth="206.0" promptText="Enter Game Code">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="tf_portNo" layoutX="370.0" layoutY="227.0" prefHeight="30.0" prefWidth="206.0" promptText="Enter Port Number">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
-      <Button fx:id="bt_join" layoutX="306.0" layoutY="303.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="334.0" style="-fx-background-color: #E96151;" text="Join" textFill="WHITE">
+      <Button fx:id="bt_join" alignment="CENTER" layoutX="288.0" layoutY="294.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="334.0" style="-fx-background-color: #E96151;" text="Join" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font></Button>
-      <Label fx:id="lb_update" layoutX="248.0" layoutY="306.0" prefWidth="36.0">
-         <font>
-            <Font name="Ubuntu Bold" size="13.0" />
-         </font>
-      </Label>
       <Button layoutY="-5.0" mnemonicParsing="false" onAction="#goToDashboard" prefHeight="44.0" prefWidth="102.0" style="-fx-background-color: #E96151;" text="&lt;-" textFill="WHITE">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
+      <Label fx:id="lb_status" alignment="CENTER" layoutX="455.0" layoutY="367.0" />
    </children>
 </AnchorPane>

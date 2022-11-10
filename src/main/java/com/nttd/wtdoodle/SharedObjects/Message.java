@@ -21,7 +21,17 @@ public class Message {
         REQUEST_FRIEND_REQUESTS,
         FRIEND_REQUESTS,
         ADD_FRIEND,
-        DELETE_REQUEST
+        DELETE_REQUEST,
+        ADD_GAME,
+        DELETE_GAME,
+        SEARCH_GAME,
+        GAME_FOUND,
+        GAME_NOT_FOUND,
+        REQUEST_FRIEND_LIST,
+        FRIEND_LIST,
+        SEND_GAME_INVITE,
+        GAME_INVITE,
+        LOG_OUT
     }
 
     private TYPE type;

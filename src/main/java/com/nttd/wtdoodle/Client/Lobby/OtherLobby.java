@@ -1,8 +1,12 @@
 package com.nttd.wtdoodle.Client.Lobby;
 
+import com.nttd.wtdoodle.Client.Connections.CToSBridge;
 import com.nttd.wtdoodle.Client.Game.Player.Player;
 import com.nttd.wtdoodle.Client.Game.Player.PtoSBridge;
+import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.ResourceLocator;
+import com.nttd.wtdoodle.SharedObjects.GameSharable;
+import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -15,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,12 +29,11 @@ import java.util.ResourceBundle;
 
 public class OtherLobby extends Application implements Initializable {
     public Label lb_players;
-    public TextField tf_hostIp;
-    public TextField tf_portNo;
     public Button bt_join;
-    public Label lb_update;
     public AnchorPane ap_main;
     static PtoSBridge ptoSBridge;
+    public TextField tf_gameCode;
+    public Label lb_status;
 
     public static void startGame(AnchorPane ap_main) {
         Platform.runLater(new Runnable() {
@@ -59,29 +63,51 @@ public class OtherLobby extends Application implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        bt_join.setOnAction(new EventHandler<ActionEvent>() {
+    public static void joinGame(GameSharable g,Node node){
+        Platform.runLater(new Runnable() {
             @Override
-            public void handle(ActionEvent actionEvent) {
-                String hostIp = tf_hostIp.getText();
-                String portNo = tf_portNo.getText();
-                if(!hostIp.isEmpty() && !portNo.isEmpty()){
+            public void run() {
+                AnchorPane ap_main = (AnchorPane)node;
+                Label lb_status = (Label) ap_main.lookup("#lb_status");
+                lb_status.setTextFill(Color.RED);
+                if(!g.getIpAddress().isEmpty() && g.getPortNo()!=0){
+                    PtoSBridge ptoSBridge = PtoSBridge.getInstance();
                     try {
-                        ptoSBridge = new PtoSBridge(new Socket(hostIp,Integer.parseInt(portNo)),false,ap_main);
+                        ptoSBridge.startBridge(new Socket(g.getIpAddress(),g.getPortNo()),false,(AnchorPane)node);
                         ptoSBridge.receiveMessagesFromServer();
                     } catch (IOException e) {
-                        lb_update.setText("Enter a valid IpAddress and Port No.");
+                        lb_status.setText("Enter a valid IpAddress and Port No.");
                     }
                     ap_main.getChildren().removeAll(ap_main.lookup("#tf_hostIp"));
                     ap_main.getChildren().removeAll(ap_main.lookup("#tf_portNo"));
                     ap_main.getChildren().removeAll(ap_main.lookup("#bt_join"));
                 }
                 else{
-                    lb_update.setText("Enter a valid IpAddress and Port No.");
+                    lb_status.setText("Enter a valid IpAddress and Port No.");
                 }
+            }
+        });
 
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        CToSBridge cToSBridge = CToSBridge.getInstance();
+        cToSBridge.setHolder(ap_main);
+        User user = User.getInstance();
+        if(user.isJoinedViaInvite()){
+            tf_gameCode.setText(user.getInviteCode());
+        }
+        bt_join.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                String gameCode = tf_gameCode.getText();
+                if(!gameCode.isEmpty()){
+                    User user = User.getInstance();
+                    CToSBridge cToSBridge = CToSBridge.getInstance();
+                    cToSBridge.sendMessageToServer(new Message(Message.TYPE.SEARCH_GAME,user.getUserId(),gameCode));
+                    cToSBridge.setHolder(ap_main);
+                }
             }
 
         });
@@ -93,6 +119,17 @@ public class OtherLobby extends Application implements Initializable {
             public void run() {
                 Label lb = (Label) anchorPane.lookup("#lb_players");
                 lb.setText("hello"+players);
+            }
+        });
+    }
+    public static void updateStatusLabel(String s , Node node){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                AnchorPane anchorPane = (AnchorPane) node;
+                Label lb_update = (Label) anchorPane.lookup("#lb_status");
+                lb_update.setTextFill(Color.RED);
+                lb_update.setText(s);
             }
         });
     }

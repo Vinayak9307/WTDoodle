@@ -1,10 +1,11 @@
 package com.nttd.wtdoodle.Client.Game.Server;
 
-import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
+import com.nttd.wtdoodle.Client.Game.GameObjects.GameMessage;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 import com.nttd.wtdoodle.Client.Game.GameObjects.WordGenerator;
 import com.nttd.wtdoodle.Client.Lobby.HostLobby;
+import com.nttd.wtdoodle.SharedObjects.GameSharable;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class GameServer implements Runnable{
     /*Method to select new drawer by the given index*/
     private void setDrawer(int drawerIndex) {
         drawer = players.get(drawerIndex);
-        sendMessageToAll(new Message(Message.TYPE.SET_DRAWER,(drawerIndex+1),drawer.getPlayerName()));
+        sendMessageToAll(new GameMessage(GameMessage.TYPE.SET_DRAWER,(drawerIndex+1),drawer.getPlayerName()));
     }
 
     /*Method to start new game*/
@@ -64,13 +65,13 @@ public class GameServer implements Runnable{
                     setDrawer(currentDrawer++);
                     setGuessers();
                     randomThreeWords = wordGenerator.getThreeRandomWords();
-                    sendMessageToAll(new Message(Message.TYPE.WORD_SELECTION, drawer.getPlayerID(), randomThreeWords));
+                    sendMessageToAll(new GameMessage(GameMessage.TYPE.WORD_SELECTION, drawer.getPlayerID(), randomThreeWords));
                     while (!isCurrentWordSelected) {
                         Thread.onSpinWait();
                     }
-                    sendMessageToAll(new Message(Message.TYPE.GENERAL,0,"Timer Started"));
+                    sendMessageToAll(new GameMessage(GameMessage.TYPE.GENERAL,0,"Timer Started"));
                     while (getRemainingTime() > 0 && allHaveNotGuessed()) {
-                        sendMessageToAll(new Message(Message.TYPE.UPDATE_TIMER, 0, getRemainingTime() + ""));
+                        sendMessageToAll(new GameMessage(GameMessage.TYPE.UPDATE_TIMER, 0, getRemainingTime() + ""));
                         decrementRemainingTime(1);
                         try {
                             Thread.sleep(1000L);
@@ -89,7 +90,7 @@ public class GameServer implements Runnable{
     }
     public void sendClearScreenMessage(){
         PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
-        sendMessageToAll(new Message(Message.TYPE.PEN_POSITION, 0, p.toString()));
+        sendMessageToAll(new GameMessage(GameMessage.TYPE.PEN_POSITION, 0, p.toString()));
     }
     public boolean allHaveNotGuessed(){
         for(PlayerHandler player : players){
@@ -116,7 +117,7 @@ public class GameServer implements Runnable{
             sc.append(entry.getValue().getPlayerName()).append(" : ").append((max-entry.getKey())).append("@");
         }
         String score = sc.toString();
-        sendMessageToAll(new Message(Message.TYPE.SET_SCORE,0,score));
+        sendMessageToAll(new GameMessage(GameMessage.TYPE.SET_SCORE,0,score));
     }
 
     /*GETTER AND SETTER FOR isCurrentWordSelected*/
@@ -158,8 +159,8 @@ public class GameServer implements Runnable{
         return players;
     }
 
-    public String getJoinCode(){
-        return Objects.requireNonNull(getLocalAddress()).toString() + "," + serverSocket.getLocalPort();
+    public GameSharable getJoinCode(){
+        return new GameSharable(getAlphaNumericString(8),Objects.requireNonNull(getLocalAddress()).toString(),serverSocket.getLocalPort());
     }
 
     /*GameServer Constructor to create new ServerSocket as well as initialize various game variables*/
@@ -199,7 +200,7 @@ public class GameServer implements Runnable{
                 players.add(p);
                 playerNames += p.getPlayerName();
                 HostLobby.updatePlayerLabel(playerNames,ap_main);
-                sendMessageToAll(new Message(Message.TYPE.NEW_PLAYER_JOINED,0,playerNames));
+                sendMessageToAll(new GameMessage(GameMessage.TYPE.NEW_PLAYER_JOINED,0,playerNames));
             }
         }catch (IOException e){
             System.out.println("Error occurred in GameServer acceptConnection.");
@@ -222,10 +223,24 @@ public class GameServer implements Runnable{
     }
 
     /*This method sends a message to all playerHandlers*/
-    public void sendMessageToAll(Message m){
+    public void sendMessageToAll(GameMessage m){
         for(PlayerHandler player : players){
             player.sendMessageToClient(m.toString());
         }
+    }
+    private String getAlphaNumericString(int length)
+    {
+
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789";
+
+        StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            int index= (int)(AlphaNumericString.length()* Math.random());
+            sb.append(AlphaNumericString.charAt(index));
+        }
+        return sb.toString();
     }
 
     @Override

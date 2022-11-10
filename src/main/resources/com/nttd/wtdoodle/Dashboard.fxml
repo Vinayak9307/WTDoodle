@@ -11,13 +11,13 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Dashboard.Dashboard">
+<AnchorPane fx:id="ap_main" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Dashboard.Dashboard">
     <children>
         <AnchorPane layoutX="-1.0" prefHeight="573.0" prefWidth="950.0" style="-fx-background-color: #d7dade;">
             <children>
                 <ScrollPane fx:id="friendList" layoutX="750.0" layoutY="95.0" prefHeight="416.0" prefWidth="200.0">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="396.0" prefWidth="200.0" style="-fx-background-color: #d7dade;">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="399.0" prefWidth="200.0" style="-fx-background-color: #d7dade;">
                             <children>
                                 <GridPane fx:id="gridPane" layoutY="4.0" prefHeight="30.0" prefWidth="186.0">
                                     <columnConstraints>
@@ -60,6 +60,21 @@
                         <Font size="15.0" />
                     </font></Button>
             <Button fx:id="btn_logout" layoutX="819.0" layoutY="523.0" mnemonicParsing="false" text="LOG OUT" />
+            <ScrollPane layoutX="14.0" layoutY="177.0" prefHeight="219.0" prefWidth="247.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="216.0" prefWidth="244.0" style="-fx-background-color: #d7dade;">
+                     <children>
+                        <GridPane fx:id="gp_inviteList" prefHeight="0.0" prefWidth="247.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="167.0" minWidth="10.0" prefWidth="137.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" prefWidth="56.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="141.0" minWidth="10.0" prefWidth="55.0" />
+                          </columnConstraints>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </ScrollPane>
             </children>
         </AnchorPane>
     </children>

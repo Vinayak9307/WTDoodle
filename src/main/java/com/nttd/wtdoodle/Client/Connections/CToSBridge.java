@@ -1,14 +1,21 @@
 package com.nttd.wtdoodle.Client.Connections;
 
+import com.nttd.wtdoodle.Client.Dashboard.Dashboard;
 import com.nttd.wtdoodle.Client.Dashboard.SearchFriend;
+import com.nttd.wtdoodle.Client.Lobby.OtherLobby;
 import com.nttd.wtdoodle.Client.Login.LoginController;
 import com.nttd.wtdoodle.Client.Login.RegisterController;
 import com.nttd.wtdoodle.Client.Models.*;
+import com.nttd.wtdoodle.SharedObjects.GameSharable;
 import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.scene.Node;
+import javafx.util.Pair;
+
 import java.io.*;
 import java.net.Socket;
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CToSBridge implements Runnable{
 
@@ -61,7 +68,7 @@ public class CToSBridge implements Runnable{
     }
 
     private void receiveMessageFromServer() {
-        while(socket.isConnected()){
+        while(socket.isConnected() && !Thread.currentThread().isInterrupted()){
             try {
                 String message = bufferedReader.readLine();
                 decodeMessage(message);
@@ -69,6 +76,7 @@ public class CToSBridge implements Runnable{
                 throw new RuntimeException(e);
             }
         }
+        System.out.println("Closing CtoSBridge.");
     }
     private void decodeMessage(String message){
         String[] data = message.split(",");
@@ -135,6 +143,28 @@ public class CToSBridge implements Runnable{
                 }
             }
         }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.GAME_FOUND){
+            String[] gameData = data[2].split(";");
+            GameSharable g = new GameSharable(gameData[0],gameData[1],Integer.parseInt(gameData[2]));
+            System.out.println("Active game found with ipAddress : " + g.getIpAddress()+" and port No:"+g.getPortNo());
+            OtherLobby.joinGame(g,holder);
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.GAME_NOT_FOUND){
+            OtherLobby.updateStatusLabel("Active game not found with given code.",holder);
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.FRIEND_LIST){
+            if(data.length>2) {
+                String[] friends = data[2].split(";");
+                Dashboard.updateFriendList(friends,holder);
+            }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.GAME_INVITE){
+            String[] inviteData = data[2].split(";");
+            String friendName = inviteData[0];
+            String gameCode = inviteData[1];
+            Pair<String , String> invitePair = new Pair<>(friendName,gameCode);
+            user.getInvites().add(invitePair);
+        }
 
     }
     public void sendMessageToServer(Message message){
@@ -145,6 +175,5 @@ public class CToSBridge implements Runnable{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

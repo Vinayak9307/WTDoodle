@@ -1,5 +1,10 @@
 package com.nttd.wtdoodle.Client.Models;
 
+import javafx.util.Pair;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 public class User {
 
     private String name;
@@ -8,11 +13,31 @@ public class User {
     private String email;
     private int userId;
     private int totalScore;
-
-
     private int gamesPlayed;
+    private boolean joinedViaInvite = false;
+    private String inviteCode;
 
+    public boolean isJoinedViaInvite() {
+        return joinedViaInvite;
+    }
 
+    public String getInviteCode() {
+        return inviteCode;
+    }
+
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
+    }
+
+    public void setJoinedViaInvite(boolean joinedViaInvite) {
+        this.joinedViaInvite = joinedViaInvite;
+    }
+
+    private ArrayList<String> onlineFriends = new ArrayList<>();
+    private ArrayList<Pair<String,String>> invites = new ArrayList<>();
+    public ArrayList<String> getOnlineFriends() {
+        return onlineFriends;
+    }
     public static final User instance = new User();
     public User(){}
     public static User getInstance(){
@@ -72,5 +97,8 @@ public class User {
         this.name ="";
         this.totalScore=0;
         this.gamesPlayed=0;
+    }
+    public ArrayList<Pair<String, String>> getInvites() {
+        return invites;
     }
 }

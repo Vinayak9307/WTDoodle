@@ -1,26 +1,22 @@
 package com.nttd.wtdoodle.Client.Game.Player;
 
-import com.nttd.wtdoodle.Client.Game.GameObjects.Message;
+import com.nttd.wtdoodle.Client.Game.GameObjects.GameMessage;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
-import com.nttd.wtdoodle.ResourceLocator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -28,8 +24,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -56,6 +50,7 @@ public class Player extends Application implements Initializable {
     }
 
     public static void showWordSelectionButtons(String message, AnchorPane ap_main) {
+        PtoSBridge ptoSBridge = PtoSBridge.getInstance();
         if(ptoSBridge.isDrawer()) {
             String[] threeWords = message.split(" ");
             int i=3;
@@ -72,7 +67,8 @@ public class Player extends Application implements Initializable {
                 btn[j].setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
-                        ptoSBridge.sendMessageToServer(new Message(Message.TYPE.SET_CURRENT_WORD, ptoSBridge.getPlayerID(),threeWords[finalJ]));
+                        PtoSBridge ptosBridge = PtoSBridge.getInstance();
+                        ptoSBridge.sendMessageToServer(new GameMessage(GameMessage.TYPE.SET_CURRENT_WORD, ptoSBridge.getPlayerID(),threeWords[finalJ]));
                         for(int k=0;k<i;k++){
                             ap_main.getChildren().remove(ap_main.lookup("#chooseButton"+(k+1)));
                         }
@@ -183,7 +179,7 @@ public class Player extends Application implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         g = canvas.getGraphicsContext2D();
-
+        PtoSBridge ptoSBridge = PtoSBridge.getInstance();
         ptoSBridge.setG(g);
         ptoSBridge.setVBox(vb_message);
         ptoSBridge.setAp_main(ap_main);
@@ -208,11 +204,11 @@ public class Player extends Application implements Initializable {
                         g.setFill(c);
                         g.fillOval(x, y, size, size);
                         PenInfo p = new PenInfo(x, y, size, false, pc);
-                        ptoSBridge.sendMessageToServer(new Message(Message.TYPE.PEN_POSITION,ptoSBridge.getPlayerID(),p.toString()));
+                        ptoSBridge.sendMessageToServer(new GameMessage(GameMessage.TYPE.PEN_POSITION,ptoSBridge.getPlayerID(),p.toString()));
                     } else {
                         g.clearRect(x, y, size, size);
                         PenInfo p = new PenInfo(x, y, size, true, pc);
-                        ptoSBridge.sendMessageToServer(new Message(Message.TYPE.PEN_POSITION,ptoSBridge.getPlayerID(),p.toString()));
+                        ptoSBridge.sendMessageToServer(new GameMessage(GameMessage.TYPE.PEN_POSITION,ptoSBridge.getPlayerID(),p.toString()));
                     }
                 }
             }
@@ -239,7 +235,7 @@ public class Player extends Application implements Initializable {
 
                         hBox.getChildren().add(textFlow);
                         vb_message.getChildren().add(hBox);
-                        ptoSBridge.sendMessageToServer(new Message(Message.TYPE.GUESS,ptoSBridge.getPlayerID(),guess));
+                        ptoSBridge.sendMessageToServer(new GameMessage(GameMessage.TYPE.GUESS,ptoSBridge.getPlayerID(),guess));
                     }
                 }
             }
@@ -250,14 +246,14 @@ public class Player extends Application implements Initializable {
                 if(ptoSBridge.isDrawer()){
                     g.clearRect(0, 0, 500, 500);
                     PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
-                    ptoSBridge.sendMessageToServer(new Message(Message.TYPE.PEN_POSITION, ptoSBridge.getPlayerID(), p.toString()));
+                    ptoSBridge.sendMessageToServer(new GameMessage(GameMessage.TYPE.PEN_POSITION, ptoSBridge.getPlayerID(), p.toString()));
                 }
             }
         });
     }
     @Override
     public void stop(){
-        ptoSBridge.sendMessageToServer(new Message(Message.TYPE.CLOSE_CONNECTION,ptoSBridge.getPlayerID(),"Close Connection."));
+        ptoSBridge.sendMessageToServer(new GameMessage(GameMessage.TYPE.CLOSE_CONNECTION,ptoSBridge.getPlayerID(),"Close Connection."));
         exit(0);
     }
 }
