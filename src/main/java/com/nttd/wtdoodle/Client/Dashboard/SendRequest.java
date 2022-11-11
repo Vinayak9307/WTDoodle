@@ -3,6 +3,7 @@ package com.nttd.wtdoodle.Client.Dashboard;
 import com.nttd.wtdoodle.Client.Connections.CToSBridge;
 import com.nttd.wtdoodle.Client.Models.RequestClass;
 import com.nttd.wtdoodle.Client.Models.User;
+import com.nttd.wtdoodle.Client.Utility.KeyPressHandler;
 import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -18,7 +19,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class SendRequest implements Initializable {
+public class SendRequest extends Application implements Initializable {
     public Button btn_Cancel;
     public Button btn_Confirm;
     public AnchorPane ap_main;
@@ -53,4 +54,12 @@ public class SendRequest implements Initializable {
     }
 
 
+    @Override
+    public void start(Stage stage) throws Exception {
+
+    }
+    @Override
+    public void stop(){
+        KeyPressHandler.getInstance().setFriendRequestButtonClicked(false);
+    }
 }

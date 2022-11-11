@@ -8,7 +8,7 @@
 
 <AnchorPane fx:id="ap_main" prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.OtherLobby">
    <children>
-      <Label fx:id="lb_players" layoutX="53.0" layoutY="58.0" prefHeight="30.0" prefWidth="126.0">
+      <Label fx:id="lb_players" layoutX="53.0" layoutY="58.0">
          <font>
             <Font name="System Bold" size="17.0" />
          </font></Label>

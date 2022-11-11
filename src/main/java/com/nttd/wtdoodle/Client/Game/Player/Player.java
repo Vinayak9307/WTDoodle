@@ -3,6 +3,7 @@ package com.nttd.wtdoodle.Client.Game.Player;
 import com.nttd.wtdoodle.Client.Game.GameObjects.GameMessage;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
+import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -20,6 +21,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
@@ -118,6 +120,54 @@ public class Player extends Application implements Initializable {
         });
 
     }
+
+    public static void showDrawingButtons(AnchorPane ap_main){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ap_main.getChildren().remove(ap_main.lookup("#rect_hide"));
+            }
+        });
+    }
+
+    public static void hideDrawingButtons(AnchorPane ap_main) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Rectangle rect = new Rectangle();
+                rect.setId("rect_hide");
+                rect.setFill(Color.WHITE);
+                rect.setStroke(Color.WHITE);
+                rect.setLayoutX(35);
+                rect.setLayoutY(440);
+                rect.setWidth(420);
+                rect.setHeight(30);
+                ap_main.getChildren().add(rect);
+            }
+        });
+    }
+
+    public static void removeHint(AnchorPane ap_main){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ap_main.getChildren().remove(ap_main.lookup("#lb_hint"));
+            }
+        });
+    }
+    public static void showHint(String s,AnchorPane ap_main) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Label l = new Label("Length of Word : "+s);
+                l.setId("lb_hint");
+                l.setLayoutX(70);
+                l.setLayoutY(447);
+                ap_main.getChildren().add(l);
+            }
+        });
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
 
@@ -250,6 +300,7 @@ public class Player extends Application implements Initializable {
                 }
             }
         });
+        ptoSBridge.sendMessageToServer(new GameMessage(GameMessage.TYPE.READY,ptoSBridge.getPlayerID(),"I am ready."));
     }
     @Override
     public void stop(){

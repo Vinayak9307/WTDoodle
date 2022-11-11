@@ -16,7 +16,10 @@ public class User {
     private int gamesPlayed;
     private boolean joinedViaInvite = false;
     private String inviteCode;
-
+    private ArrayList<String> friends = new ArrayList<>();
+    public ArrayList<String> getFriends() {
+        return friends;
+    }
     public boolean isJoinedViaInvite() {
         return joinedViaInvite;
     }

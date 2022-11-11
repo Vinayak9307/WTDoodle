@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.LeaderBoard">
+<AnchorPane prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.LeaderBoard">
    <children>
-      <ScrollPane layoutX="192.0" layoutY="202.0" prefHeight="338.0" prefWidth="596.0" style="-fx-background-color: #d7dade;">
+      <ScrollPane layoutX="192.0" layoutY="127.0" prefHeight="338.0" prefWidth="596.0" style="-fx-background-color: #d7dade;">
          <content>
             <GridPane fx:id="gridPane" prefHeight="0.0" prefWidth="596.0">
               <columnConstraints>
@@ -27,10 +27,20 @@
             <Font size="22.0" />
          </font>
       </Button>
-      <Label alignment="CENTER" layoutX="251.0" layoutY="97.0" prefHeight="74.0" prefWidth="478.0" style="-fx-background-color: #E96151;" text="LeaderBoard" textFill="WHITE">
+      <Label fx:id="lb_leaderBoard" alignment="CENTER" layoutX="327.0" layoutY="51.0" style="-fx-background-color: #E96151;" text="LeaderBoard" textFill="WHITE">
          <font>
             <Font size="51.0" />
          </font>
       </Label>
+      <Button fx:id="btn_global" layoutX="105.0" layoutY="481.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="174.0" style="-fx-background-color: #E96151;" text="Global" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="btn_friend" layoutX="701.0" layoutY="481.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="174.0" style="-fx-background-color: #E96151;" text="Friend" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

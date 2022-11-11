@@ -3,7 +3,13 @@ package com.nttd.wtdoodle.Client.Models;
 import java.util.ArrayList;
 
 public class LeaderBoardModel {
-    ArrayList<LeaderBoardData> leaderBoardData = new ArrayList<>();
+    ArrayList<LeaderBoardData> globalLeaderBoardData = new ArrayList<>();
+    ArrayList<LeaderBoardData> friendsLeaderBoardData = new ArrayList<>();
+
+    public ArrayList<LeaderBoardData> getFriendsLeaderBoardData() {
+        return friendsLeaderBoardData;
+    }
+
     public static LeaderBoardModel instance = new LeaderBoardModel();
     public LeaderBoardModel(){}
 
@@ -11,11 +17,11 @@ public class LeaderBoardModel {
         return instance;
     }
 
-    public ArrayList<LeaderBoardData> getLeaderBoardData() {
-        return leaderBoardData;
+    public ArrayList<LeaderBoardData> getGlobalLeaderBoardData() {
+        return globalLeaderBoardData;
     }
 
-    public void setLeaderBoardData(ArrayList<LeaderBoardData> leaderBoardData) {
-        this.leaderBoardData = leaderBoardData;
+    public void setGlobalLeaderBoardData(ArrayList<LeaderBoardData> globalLeaderBoardData) {
+        this.globalLeaderBoardData = globalLeaderBoardData;
     }
 }

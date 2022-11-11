@@ -18,7 +18,9 @@ public class GameMessage implements Serializable {
         SUCCESSFULLY_GUESSED,
         UPDATE_TIMER,
         CLOSE_CONNECTION,
-        SET_SCORE
+        SET_SCORE,
+        SEND_HINT,
+        READY
     }
     private TYPE type;
     private int id;

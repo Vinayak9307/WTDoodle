@@ -12,6 +12,16 @@ public class PlayerHandler implements Runnable {
     String playerName;
     boolean guessed;
     int score;
+    boolean ready = false;
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
     Socket player;
     BufferedReader bufferedReader;
     BufferedWriter bufferedWriter;
@@ -19,7 +29,6 @@ public class PlayerHandler implements Runnable {
     public int getScore() {
         return score;
     }
-
     public void setScore(int score) {
         this.score = score;
     }
@@ -73,17 +82,6 @@ public class PlayerHandler implements Runnable {
             public void run() {
                 while(player.isConnected()){
                     try {
-//                            Object obj = ois.readObject();
-//                            if(obj.getClass() == Message.class){
-//                                Message m = (Message) obj;
-//                                decodeMessage(m);
-//                                if (m.getType() != Message.TYPE.GUESS && m.getType() != Message.TYPE.CLOSE_CONNECTION) {
-//                                    for (PlayerHandler client : game.getPlayers()) {
-//                                        if (client.equals(me)) continue;
-//                                        client.sendMessageToClient(m);
-//                                    }
-//                                }
-//                            }
                         String m = bufferedReader.readLine();
                         String []message = m.split(",");
                         decodeMessage(m);
@@ -127,6 +125,9 @@ public class PlayerHandler implements Runnable {
             logTime();
             game.getPlayers().remove(Integer.parseInt(message[1])-1);
             game.sendMessageToAll(new GameMessage(GameMessage.TYPE.GENERAL,Integer.parseInt(message[1]),playerName + " has left."));
+        }
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.READY){
+            setReady(true);
         }
     }
     public void sendMessageToClient(String message) {

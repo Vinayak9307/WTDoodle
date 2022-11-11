@@ -81,12 +81,18 @@ public class SearchFriend extends Application implements Initializable {
                  */
                 if(!tf_friend.getText().isEmpty()) {
                     if (!tf_friend.getText().equals(user.getUserName())) {
-                        cToSBridge.sendMessageToServer(new Message(Message.TYPE.FIND_USER, user.getUserId(), tf_friend.getText()));
+                        if (!user.getFriends().contains(tf_friend.getText())) {
+                            cToSBridge.sendMessageToServer(new Message(Message.TYPE.FIND_USER, user.getUserId(), tf_friend.getText()));
+                        }
+                        else{
+                            l_search.setText(tf_friend.getText() + " is already your friend.");
+                        }
                     }
-                    else{
-                        l_search.setText("You are searching yourSelf.");
-                    }
-                }else {
+                    else {
+                            l_search.setText("You are searching yourSelf.");
+                        }
+                }
+                else {
                     l_search.setText("Please enter a username.");
                 }
             }
@@ -97,7 +103,6 @@ public class SearchFriend extends Application implements Initializable {
     public void start(Stage stage) throws Exception {
 
     }
-
     @Override
     public void stop(){
         KeyPressHandler.getInstance().setFriendRequestButtonClicked(false);

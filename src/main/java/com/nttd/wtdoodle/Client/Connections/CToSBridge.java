@@ -14,8 +14,6 @@ import javafx.util.Pair;
 import java.io.*;
 import java.net.Socket;
 import java.sql.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CToSBridge implements Runnable{
 
@@ -25,6 +23,11 @@ public class CToSBridge implements Runnable{
     BufferedReader bufferedReader;
     BufferedWriter bufferedWriter;
     Node holder;
+
+    public Node getHolder() {
+        return holder;
+    }
+
     User user;
     GameHistory gameHistory;
     LeaderBoardModel leaderBoard;
@@ -119,11 +122,17 @@ public class CToSBridge implements Runnable{
             if (data.length>2) {
                 String[] leaderboardStr = data[2].split(";");
                 leaderBoard = LeaderBoardModel.getInstance();
-                leaderBoard.getLeaderBoardData().clear();
+                leaderBoard.getGlobalLeaderBoardData().clear();
+                leaderBoard.getFriendsLeaderBoardData().clear();
                 for (String s : leaderboardStr) {
                     String[] leaderboardData = s.split(" ");
                     LeaderBoardData l = new LeaderBoardData(0, leaderboardData[0], Date.valueOf(leaderboardData[1]), Integer.parseInt(leaderboardData[2]));
-                    leaderBoard.getLeaderBoardData().add(l);
+                    for(String friendName : user.getFriends()){
+                        if(l.getUserName().equals(friendName) || l.getUserName().equals(user.getUserName())){
+                            leaderBoard.getFriendsLeaderBoardData().add(l);
+                        }
+                    }
+                    leaderBoard.getGlobalLeaderBoardData().add(l);
                 }
             }
         }
@@ -164,6 +173,7 @@ public class CToSBridge implements Runnable{
             String gameCode = inviteData[1];
             Pair<String , String> invitePair = new Pair<>(friendName,gameCode);
             user.getInvites().add(invitePair);
+            Dashboard.refresh(holder);
         }
 
     }

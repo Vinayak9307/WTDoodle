@@ -128,11 +128,13 @@ public class PtoSBridge {
                 Player.addLabel("You are the new drawer",vBox);
                 drawer = true;
                 guesser = false;
+                Player.showDrawingButtons(ap_main);
             }
             else{
                 Player.addLabel(message[2] + " is the new drawer .",vBox);
                 guesser = true;
                 drawer = false;
+                Player.hideDrawingButtons(ap_main);
             }
         }
         if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SET_ID){
@@ -169,6 +171,15 @@ public class PtoSBridge {
         }
         if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SET_SCORE){
             Player.showScore(message[2],ap_main);
+            Player.removeHint(ap_main);
+        }
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.SEND_HINT){
+            if(Integer.parseInt(message[1]) != playerID){
+                Player.showHint(message[2],ap_main);
+            }
+            else{
+                Player.removeHint(ap_main);
+            }
         }
     }
     public void closeEverything(Socket socket, ObjectOutputStream oos , ObjectInputStream ois){

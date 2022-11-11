@@ -19,6 +19,7 @@ public class GameServer implements Runnable{
     int maxPlayers;             //Maximum number of players who can join the game
     int numRounds;              //Current round number
     int maxRounds;              //Maximum number of round
+    boolean isStarted;          //Check if the game is started or not
     int currentDrawer = 0;      //Current Drawer index
     int incrementScoreFactorForGuesser;   //Score increasing factor for correct guess
     String playerNames;
@@ -43,6 +44,7 @@ public class GameServer implements Runnable{
     volatile boolean isCurrentWordSelected;         //Boolean to check if the current word is selected or not.
     WordGenerator wordGenerator;    //Helper object that return three magical words XD
     String randomThreeWords;        //three magical words :p
+    int guessTime;
     int remainingTime;
     Thread gameThread;
 
@@ -54,12 +56,17 @@ public class GameServer implements Runnable{
 
     /*Method to start new game*/
     public void startNewGame() {
+        isStarted = true;
+
         gameThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                while(!everyOneIsReady()){
+                    Thread.onSpinWait();
+                }
                 while(numRounds < maxRounds && !Thread.currentThread().isInterrupted()) {
                     sendClearScreenMessage();
-                    setRemainingTime(20);
+                    setRemainingTime(guessTime);
                     setCurrentWordSelected(false);
                     setCurrentWord("");
                     setDrawer(currentDrawer++);
@@ -70,6 +77,7 @@ public class GameServer implements Runnable{
                         Thread.onSpinWait();
                     }
                     sendMessageToAll(new GameMessage(GameMessage.TYPE.GENERAL,0,"Timer Started"));
+                    sendMessageToAll(new GameMessage(GameMessage.TYPE.SEND_HINT,drawer.playerID,getCurrentWord().length()+""));
                     while (getRemainingTime() > 0 && allHaveNotGuessed()) {
                         sendMessageToAll(new GameMessage(GameMessage.TYPE.UPDATE_TIMER, 0, getRemainingTime() + ""));
                         decrementRemainingTime(1);
@@ -88,6 +96,16 @@ public class GameServer implements Runnable{
         });
         gameThread.start();
     }
+
+    private boolean everyOneIsReady() {
+        for(PlayerHandler p : players){
+            if(!p.isReady()){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void sendClearScreenMessage(){
         PenInfo p = new PenInfo(0, 0, 500, true, new PenColor(0,0,0));
         sendMessageToAll(new GameMessage(GameMessage.TYPE.PEN_POSITION, 0, p.toString()));
@@ -164,7 +182,7 @@ public class GameServer implements Runnable{
     }
 
     /*GameServer Constructor to create new ServerSocket as well as initialize various game variables*/
-    public GameServer(AnchorPane anchorPane){
+    public GameServer(AnchorPane anchorPane , int max , int guessTime,int rounds){
         try{
             System.out.println("=====GAME SERVER=====");
             serverSocket = new ServerSocket(1234);
@@ -174,15 +192,16 @@ public class GameServer implements Runnable{
         ap_main = anchorPane;
         numPlayers = 0;
         numRounds = 0;
-        maxPlayers = 2;
+        maxPlayers = max;
         playerNames = "";
-        maxRounds = maxPlayers*2;
+        maxRounds = maxPlayers*rounds;
         isCurrentWordSelected = false;
         currentWord = "";
         wordGenerator = new WordGenerator();
-        remainingTime = 10;
+        this.guessTime = guessTime;
         incrementScoreFactorForGuesser = 200;
         incrementScoreFactorForDrawer = 50;
+        isStarted = false;
     }
 
 
@@ -191,7 +210,7 @@ public class GameServer implements Runnable{
     public void acceptConnection(){
         try{
             System.out.println("Waiting for clients.....");
-            while(numPlayers < maxPlayers) {
+            while(numPlayers < maxPlayers && !isStarted) {
                 Socket socket = serverSocket.accept();
                 numPlayers++;
                 PlayerHandler p = new PlayerHandler(socket , numPlayers , this);
@@ -269,6 +288,10 @@ public class GameServer implements Runnable{
             }
         }
         System.out.println("Game Server Closed.");
+    }
+
+    public int getNumberOfPlayers() {
+        return players.size();
     }
 
 
