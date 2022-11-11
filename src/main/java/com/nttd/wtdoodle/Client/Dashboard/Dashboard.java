@@ -52,6 +52,7 @@ public class Dashboard implements Initializable {
                     String[] friendData = friend.split(" ");
                     user.getFriends().add(friendData[0]);
                     gridPane.addRow(count,isOnline(friendData[1],friendData[0]),createLabel(friendData[0]));
+                    count++;
                 }
             }
         });
@@ -215,6 +216,7 @@ public class Dashboard implements Initializable {
         cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_FRIEND_REQUESTS, user.getUserId(), user.getUserName()));
         cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_GAME_HISTORY, user.getUserId(), user.getUserName()));
         cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_LEADERBOARD, user.getUserId(), user.getUserName()));
+        cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_INFO,user.getUserId(), user.getUserName()));
         addInviteData();
         /*
         bring friend list and add in scroll pane  , make necessary changes in the dummy structure

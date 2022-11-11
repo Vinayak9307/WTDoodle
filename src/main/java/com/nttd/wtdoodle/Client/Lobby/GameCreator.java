@@ -53,14 +53,29 @@ public class GameCreator implements Initializable {
         btn_createGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(!tf_maxPlayers.getText().isEmpty() && !tf_guessingTime.getText().isEmpty() && !tf_numRounds.getText().isEmpty())
-                {
-                    gameData.setMaxPlayers(Integer.parseInt(tf_maxPlayers.getText()));
-                    gameData.setGuessingTime(Integer.parseInt(tf_guessingTime.getText()));
-                    gameData.setNumberOfRounds(Integer.parseInt(tf_numRounds.getText()));
-                    Dashboard.goToHostLobby();
-                    Stage stage = (Stage) btn_createGame.getScene().getWindow();
-                    stage.close();
+                if(!tf_maxPlayers.getText().isEmpty() && !tf_guessingTime.getText().isEmpty() && !tf_numRounds.getText().isEmpty()) {
+                    int maxPlayers = Integer.parseInt(tf_maxPlayers.getText());
+                    int guessingTime = Integer.parseInt(tf_guessingTime.getText());
+                    int numRound = Integer.parseInt(tf_numRounds.getText());
+                    if (maxPlayers > 1){
+                        gameData.setMaxPlayers(maxPlayers);
+                        if(guessingTime > 20) {
+                            gameData.setGuessingTime(guessingTime);
+                            if(numRound > 0){
+                                gameData.setNumberOfRounds(numRound);
+                                Dashboard.goToHostLobby();
+                                Stage stage = (Stage) btn_createGame.getScene().getWindow();
+                                stage.close();
+                            }
+                            else {
+                                System.out.println("numROunds badhao");
+                            }
+                        }
+                        else{
+                            System.out.println("kuch");
+                        }
+
+                    }
                 }
             }
         });

@@ -13,9 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-
 import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.io.IOException;
@@ -69,7 +67,7 @@ public class Profile implements Initializable {
         ArrayList<GameHistoryData> gData = gameHistory.getGameHistories();
         int count = 1;
         for(GameHistoryData g : gData) {
-            gridPane.addRow(count,createRowLabel(count+""),createRowLabel(g.getId()+""),createRowLabel(g.getDate().toString()),createRowLabel(100+""),createRowLabel(g.getWinner()));
+            gridPane.addRow(count,createRowLabel(count+""),createRowLabel(g.getId()+""),createRowLabel(g.getDate().toString()),createRowLabel(g.getYourScore()+""),createRowLabel(g.getWinner()));
             count++;
         }
     }

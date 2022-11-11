@@ -111,8 +111,19 @@ public class PlayerHandler implements Runnable {
             if(game.getCurrentWord().toLowerCase().equals(message[2].toLowerCase())){
                 game.sendMessageToAll(new GameMessage(GameMessage.TYPE.SUCCESSFULLY_GUESSED, Integer.parseInt(message[1]) ,playerName + " has guessed the word correctly ."));
                 setGuessed(true);
-                score += game.getIncrementScoreFactorForGuesser();
-                game.getDrawer().incrementScore(game.getIncrementScoreFactorForDrawer());
+                float totalTime = (float)game.getGuessTime();
+                float totalPoint =(float) game.getIncrementScoreFactorForGuesser();
+                float remainingTime = (float) game.getRemainingTime();
+                if(remainingTime > totalTime/4.0){
+                    score+=(remainingTime/totalTime)*totalPoint;
+                }
+                else if(remainingTime == 0){
+                    score += 0;
+                }
+                else{
+                    score += (totalPoint/5) + (totalPoint/20) * (remainingTime/totalTime) * 4;
+                }
+                game.getDrawer().incrementScore((int)(score*0.5));
                 System.out.println("Player #" + Integer.parseInt(message[1]) + " " +playerName + " has guessed the word correctly .");
                 System.out.println("Player #" + Integer.parseInt(message[1]) + " " +playerName + " : " + score);
                 System.out.println("Player #" + game.getDrawer().getPlayerID() + " " + game.getDrawer().getPlayerName() + " : " + game.getDrawer().getScore());

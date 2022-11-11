@@ -113,7 +113,7 @@ public class CToSBridge implements Runnable{
                 for (int i = 0; i < gameHistoryStr.length; i++) {
                     String[] gameHistoryData = gameHistoryStr[i].split(" ");
                     GameHistoryData g = new GameHistoryData(Integer.parseInt(gameHistoryData[0]), Date.valueOf(gameHistoryData[1]),
-                            0, gameHistoryData[2]);
+                            Integer.parseInt(gameHistoryData[3]), gameHistoryData[2]);
                     gameHistory.getGameHistories().add(g);
                 }
             }

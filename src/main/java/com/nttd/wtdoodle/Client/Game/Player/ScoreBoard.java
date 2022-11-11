@@ -1,5 +1,6 @@
 package com.nttd.wtdoodle.Client.Game.Player;
 
+import com.nttd.wtdoodle.Client.Game.GameObjects.Score;
 import com.nttd.wtdoodle.ResourceLocator;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -13,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
@@ -48,9 +50,14 @@ public class ScoreBoard extends Application implements Initializable {
      });
 
      /*populate the grid with score of player in the game*/
-        int i=1;
-        gridPane.addRow(1,createLabel("Rank"),createLabel("Username"),createLabel("Score"));
-
+        int i=0;
+        gridPane.addRow(i,createLabel("Rank"),createLabel("Username"),createLabel("Score"));
+        Score score = Score.getInstance();
+        score.sortScores();
+        for(Pair<String , Integer> sc : score.getScores()){
+            i++;
+            gridPane.addRow(i,createLabel(i+""),createLabel(sc.getKey()) , createLabel(String.valueOf(sc.getValue())));
+        }
     }
     private Label createLabel(String s){
         Label label=new Label(s);

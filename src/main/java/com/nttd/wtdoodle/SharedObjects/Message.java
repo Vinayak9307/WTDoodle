@@ -31,6 +31,7 @@ public class Message {
         FRIEND_LIST,
         SEND_GAME_INVITE,
         GAME_INVITE,
+        UPDATE_GAME_DETAIL,
         LOG_OUT
     }
 

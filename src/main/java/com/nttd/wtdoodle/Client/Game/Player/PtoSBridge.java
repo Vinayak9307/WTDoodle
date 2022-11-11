@@ -3,12 +3,14 @@ package com.nttd.wtdoodle.Client.Game.Player;
 import com.nttd.wtdoodle.Client.Game.GameObjects.GameMessage;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
+import com.nttd.wtdoodle.Client.Game.GameObjects.Score;
 import com.nttd.wtdoodle.Client.Lobby.OtherLobby;
 import com.nttd.wtdoodle.Client.Models.User;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 
 import java.io.*;
 import java.net.Socket;
@@ -179,6 +181,16 @@ public class PtoSBridge {
             }
             else{
                 Player.removeHint(ap_main);
+            }
+        }
+        if(GameMessage.TYPE.valueOf(message[0]) == GameMessage.TYPE.GAME_END){
+            Player.goToEndScreen(ap_main);
+            Score score = Score.getInstance();
+            String[] data = message[2].split("@");
+            for(String d : data){
+                String[] p = d.split(" : ");
+                Pair<String , Integer> sc = new Pair<>(p[0] , Integer.parseInt(p[1]));
+                score.getScores().add(sc);
             }
         }
     }

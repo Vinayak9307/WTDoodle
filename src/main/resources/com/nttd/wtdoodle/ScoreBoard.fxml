@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane prefHeight="570.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Game.Player.ScoreBoard">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Game.Player.ScoreBoard">
    <children>
       <Button fx:id="btn_goToDashboard" layoutX="704.0" layoutY="434.0" mnemonicParsing="false" prefHeight="65.0" prefWidth="176.0" text="Go to Dashboard">
          <font>
