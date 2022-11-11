@@ -7,23 +7,18 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap_main" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Game.Player.Player">
-   <ImageView fitHeight="500.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
-      <Image url="@GameBack.png" />
-   </ImageView>
+<AnchorPane fx:id="ap_main" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Game.Player.Player">
    <Line endX="500.0" endY="500.0" startX="500.0" />
    <TextField fx:id="tf_guess" layoutX="527.0" layoutY="463.0" />
-   <Button fx:id="bt_guess" layoutX="715.0" layoutY="463.0" mnemonicParsing="false" text="Guess">
+   <Button fx:id="bt_guess" layoutX="715.0" layoutY="463.0" mnemonicParsing="false" style="-fx-background-color: #E96151;" text="Guess" textFill="WHITE">
       <font>
-         <Font name="Ubuntu Bold" size="13.0" />
+         <Font name="System Bold" size="14.0" />
       </font></Button>
    <ScrollPane fx:id="sp_message" layoutX="527.0" layoutY="84.0" prefHeight="373.0" prefWidth="244.0">
       <VBox fx:id="vb_message" prefHeight="371.0" prefWidth="242.0" />
@@ -40,7 +35,7 @@
          <Font name="Ubuntu Bold" size="44.0" />
       </font>
    </Label>
-   <Button fx:id="bt_clear" layoutX="369.0" layoutY="441.0" mnemonicParsing="false" text="ClearAll">
+   <Button fx:id="bt_clear" layoutX="388.0" layoutY="442.0" mnemonicParsing="false" style="-fx-background-color: #E96151;" text="ClearAll" textFill="WHITE">
       <font>
          <Font name="Ubuntu Bold" size="13.0" />
       </font>

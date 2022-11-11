@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.LeaderBoard">
+<AnchorPane prefHeight="570.0" prefWidth="950.0" style="-fx-background-color: #d7dade;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Profile.LeaderBoard">
    <children>
       <ScrollPane layoutX="192.0" layoutY="127.0" prefHeight="338.0" prefWidth="596.0" style="-fx-background-color: #d7dade;">
          <content>
@@ -27,7 +27,7 @@
             <Font size="22.0" />
          </font>
       </Button>
-      <Label fx:id="lb_leaderBoard" alignment="CENTER" layoutX="327.0" layoutY="51.0" style="-fx-background-color: #E96151;" text="LeaderBoard" textFill="WHITE">
+      <Label fx:id="lb_leaderBoard" alignment="CENTER" layoutX="264.0" layoutY="52.0" prefHeight="74.0" style="-fx-background-color: #E96151;" text="Leader Board" textFill="WHITE">
          <font>
             <Font size="51.0" />
          </font>

@@ -5,20 +5,22 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane fx:id="ap_main" prefHeight="216.0" prefWidth="322.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Dashboard.SendRequest">
    <children>
-      <Label fx:id="lb_name" layoutX="79.0" layoutY="79.0" prefHeight="35.0" prefWidth="177.0">
+      <Label fx:id="lb_name" layoutX="28.0" layoutY="82.0" prefHeight="35.0" prefWidth="263.0">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="71.0" layoutY="44.0" prefHeight="35.0" prefWidth="178.0" text="Send request to ">
+      <Label alignment="CENTER" layoutX="71.0" layoutY="27.0" prefHeight="35.0" prefWidth="178.0" text="Send request to .....">
          <font>
-            <Font size="23.0" />
+            <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Button fx:id="btn_Cancel" layoutX="45.0" layoutY="131.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="88.0" text="Cancel" />
-      <Button fx:id="btn_Confirm" layoutX="168.0" layoutY="131.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="88.0" text="Confirm" />
+      <Button fx:id="btn_Cancel" layoutX="20.0" layoutY="166.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="88.0" style="-fx-background-color: #E96151;" text="Cancel" textFill="WHITE">
+         <font>
+            <Font size="13.0" />
+         </font></Button>
+      <Button fx:id="btn_Confirm" layoutX="206.0" layoutY="166.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="88.0" style="-fx-background-color: #E96151;" text="Confirm" textFill="WHITE" />
    </children>
 </AnchorPane>
