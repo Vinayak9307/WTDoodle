@@ -4,10 +4,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="258.0" prefWidth="324.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.GameCreator">
+<AnchorPane prefHeight="258.0" prefWidth="324.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Lobby.GameCreator">
    <children>
-      <Label layoutX="125.0" layoutY="21.0" text="Game Data" />
+      <Label layoutX="119.0" layoutY="14.0" prefHeight="30.0" prefWidth="86.0" text="Game Data" textFill="#1b1b1b">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font></Label>
       <Label layoutX="29.0" layoutY="66.0" text="Max Players">
          <graphic>
             <TextField fx:id="tf_maxPlayers" promptText="Max 8 players" />
@@ -18,7 +22,10 @@
             <TextField fx:id="tf_guessingTime" promptText="Time in sec" />
          </graphic>
       </Label>
-      <Button fx:id="btn_createGame" layoutX="112.0" layoutY="203.0" mnemonicParsing="false" text="Create Game" />
+      <Button fx:id="btn_createGame" layoutX="112.0" layoutY="200.0" mnemonicParsing="false" style="-fx-background-color: #E96151;" text="Create Game" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
       <Label layoutX="29.0" layoutY="152.0" text="Rounds">
          <graphic>
             <TextField fx:id="tf_numRounds" promptText="Time in sec" />
