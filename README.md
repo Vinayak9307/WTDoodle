@@ -1,7 +1,7 @@
 
-# WT_Doodle
+# What's That Doodle!! ?
 
-WT_Doodle is a multiplayer drawing and guessing pictionary game.
+What's That Doodle!! is a multiplayer drawing and guessing pictionary game.
 
 A normal game consists of a few rounds, where every round a player has to draw their chosen word and others have to guess it to gain points!
 
@@ -30,7 +30,7 @@ Step 1 -> Open XAMPP and run MySql (can run Apache if you want to see SQL data i
 
 Step 2 -> Open the project in INTELLIJ(recommended).
 
-Step 3 -> Add My SQL Connector jar file for connection.
+Step 3 -> Add MySQL Connector jar file for connection.
 
 Step 4 -> Add JavaFX Libraries.
 
