@@ -36,6 +36,7 @@ public class Dashboard implements Initializable {
     public Button btn_logout;
     public AnchorPane ap_main;
     public GridPane gp_inviteList;
+    public Button btn_refresh;
     CToSBridge cToSBridge;
     User user;
 
@@ -208,6 +209,7 @@ public class Dashboard implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println("Loading Dashboard");
         user = User.getInstance();
         RequestClass.getInstance().setSenderUserName(user.getUserName());
         cToSBridge = CToSBridge.getInstance();
@@ -218,6 +220,7 @@ public class Dashboard implements Initializable {
         cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_LEADERBOARD, user.getUserId(), user.getUserName()));
         cToSBridge.sendMessageToServer(new Message(Message.TYPE.REQUEST_USER_INFO,user.getUserId(), user.getUserName()));
         addInviteData();
+        KeyPressHandler.getInstance().setHostButtonClicked(false);
         /*
         bring friend list and add in scroll pane  , make necessary changes in the dummy structure
          */
@@ -291,6 +294,12 @@ public class Dashboard implements Initializable {
 
                 stage.setScene(scene);
                 stage.show();
+            }
+        });
+        btn_refresh.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Dashboard.refresh((Node)event.getSource());
             }
         });
     }

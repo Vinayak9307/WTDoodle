@@ -10,15 +10,14 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="ap_main" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Dashboard.Dashboard">
+<AnchorPane fx:id="ap_main" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nttd.wtdoodle.Client.Dashboard.Dashboard">
     <children>
         <AnchorPane layoutX="-1.0" prefHeight="573.0" prefWidth="950.0" style="-fx-background-color: #d7dade;">
             <children>
-                <ScrollPane fx:id="friendList" layoutX="736.0" layoutY="144.0" prefHeight="416.0" prefWidth="200.0">
+                <ScrollPane fx:id="friendList" layoutX="736.0" layoutY="144.0" prefHeight="402.0" prefWidth="200.0">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="399.0" prefWidth="198.0" style="-fx-background-color: #d7dade;">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="198.0" style="-fx-background-color: #d7dade;">
                             <children>
                                 <GridPane fx:id="gridPane" layoutY="4.0" prefHeight="30.0" prefWidth="186.0">
                                     <columnConstraints>
@@ -32,11 +31,6 @@
                             </children></AnchorPane>
                     </content>
                 </ScrollPane>
-                <Text layoutX="786.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Friend's List" wrappingWidth="112.28829574584961">
-                    <font>
-                        <Font name="System Bold" size="18.0" />
-                    </font>
-                </Text>
                 <Button fx:id="hostButton" layoutX="368.0" layoutY="196.0" mnemonicParsing="false" onAction="#hostButtonOnAction" prefHeight="47.0" prefWidth="174.0" style="-fx-background-color: #E96151;" text="Host" textFill="WHITE">
                     <font>
                         <Font size="18.0" />
@@ -55,7 +49,7 @@
                         <Image url="@Images/leaderboard.png" />
                     </image>
                 </ImageView>
-                <Button fx:id="btn_FriendRequest" layoutX="514.0" layoutY="16.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="161.0" style="-fx-background-color: #E96151;" text="Friend Request's" textFill="WHITE">
+                <Button fx:id="btn_FriendRequest" layoutX="514.0" layoutY="16.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="161.0" style="-fx-background-color: #E96151;" text="Friend Requests" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font></Button>
@@ -87,7 +81,12 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Button layoutX="423.0" layoutY="153.0" mnemonicParsing="false" style="-fx-background-color: #E96151;" text="Refresh" textFill="WHITE" />
+            <Button fx:id="btn_refresh" layoutX="423.0" layoutY="153.0" mnemonicParsing="false" style="-fx-background-color: #E96151;" text="Refresh" textFill="WHITE" />
+            <Label alignment="CENTER" layoutX="755.0" layoutY="106.0" prefHeight="31.0" prefWidth="162.0" text="Friends List">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
             </children>
         </AnchorPane>
     </children>

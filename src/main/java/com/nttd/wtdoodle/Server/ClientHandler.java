@@ -29,7 +29,7 @@ public class ClientHandler implements Runnable{
 
     @Override
     public void run() {
-        while(socket.isConnected()){
+        while(socket != null && socket.isConnected()){
             try {
                 String message = bufferedReader.readLine();
                 if(message != null)
@@ -61,14 +61,17 @@ public class ClientHandler implements Runnable{
         String[] data = message.split(",");
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.LOGIN){
             Connection connection = databaseConnection.getConnection();
+            //Querying database to get the number of player with this username and password
             String verifyLogin ="SELECT count(1) FROM user WHERE username = '" + data[2] + "' And password = '" + data[3] + "'";
             try {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(verifyLogin);
                 while(resultSet.next()){
+                    //if a player found with only one instance the login success
                     if(resultSet.getInt(1)==1){
                         sendMessageToClient(new Message(Message.TYPE.LOGIN_SUCCESSFUL,0,""));
                         this.userName = data[2];
+                        System.out.println(userName + " logged in .");
                         server.getOnlinePlayers().add(userName);
                     }
                     else{

@@ -241,6 +241,7 @@ public class GameServer implements Runnable{
                 t.start();
                 players.add(p);
                 playerNames += p.getPlayerName();
+                playerNames += ";";
                 HostLobby.updatePlayerLabel(playerNames,ap_main);
                 sendMessageToAll(new GameMessage(GameMessage.TYPE.NEW_PLAYER_JOINED,0,playerNames));
             }

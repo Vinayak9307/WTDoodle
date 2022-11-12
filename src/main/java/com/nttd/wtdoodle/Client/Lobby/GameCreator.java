@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -19,6 +20,7 @@ public class GameCreator implements Initializable {
     public TextField tf_guessingTime;
     public Button btn_createGame;
     public TextField tf_numRounds;
+    public Label lb_update;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -57,7 +59,7 @@ public class GameCreator implements Initializable {
                     int maxPlayers = Integer.parseInt(tf_maxPlayers.getText());
                     int guessingTime = Integer.parseInt(tf_guessingTime.getText());
                     int numRound = Integer.parseInt(tf_numRounds.getText());
-                    if (maxPlayers > 1){
+                    if (maxPlayers > 1 && maxPlayers < 9){
                         gameData.setMaxPlayers(maxPlayers);
                         if(guessingTime > 20) {
                             gameData.setGuessingTime(guessingTime);
@@ -68,13 +70,15 @@ public class GameCreator implements Initializable {
                                 stage.close();
                             }
                             else {
-                                System.out.println("numROunds badhao");
+                                lb_update.setText("Minimum 1 round");
                             }
                         }
                         else{
-                            System.out.println("kuch");
+                            lb_update.setText("Minimum 20 sec guessTime");
                         }
-
+                    }
+                    else{
+                        lb_update.setText("Min 2 and Max 8 players");
                     }
                 }
             }

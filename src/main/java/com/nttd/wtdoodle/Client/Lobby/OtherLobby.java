@@ -118,7 +118,12 @@ public class OtherLobby extends Application implements Initializable {
             @Override
             public void run() {
                 Label lb = (Label) anchorPane.lookup("#lb_players");
-                lb.setText("hello"+players);
+                StringBuilder playerUserName = new StringBuilder();
+                String[] playersArray = players.split(";");
+                for(String s:playersArray){
+                    playerUserName.append(s).append("\n");
+                }
+                lb.setText("JOINED PLAYERS \n" + playerUserName.toString());
             }
         });
     }
@@ -147,9 +152,6 @@ public class OtherLobby extends Application implements Initializable {
 
         stage.setScene(scene);
         stage.show();
-    }
-    public static void main(String[] args) {
-        launch();
     }
 
 }

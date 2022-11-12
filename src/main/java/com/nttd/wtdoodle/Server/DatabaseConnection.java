@@ -8,7 +8,7 @@ public class DatabaseConnection {
     public Connection databaseLink;
 
     public Connection getConnection(){
-        String databaseName ="wt_doodle";
+        String databaseName ="WTDoodle";
         String databaseUser ="root";
         String databasePassword ="";
         String url ="jdbc:mysql://localhost/"+ databaseName;
