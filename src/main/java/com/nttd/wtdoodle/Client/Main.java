@@ -34,6 +34,7 @@ public class Main extends Application {
         }
         stage.setScene(scene);
         stage.initStyle(StageStyle.DECORATED);
+        stage.setTitle("What's That Doodle!");
         stage.setResizable(false);
         stage.show();
     }

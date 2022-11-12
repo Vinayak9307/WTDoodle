@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 09, 2022 at 11:42 PM
+-- Generation Time: Nov 11, 2022 at 08:42 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -39,7 +39,11 @@ CREATE TABLE `friends` (
 
 INSERT INTO `friends` (`serialNum`, `person`, `friend`) VALUES
 (7, 'codor07', 'vinayak9307'),
-(8, 'vinayak9307', 'codor07');
+(8, 'vinayak9307', 'codor07'),
+(9, 'socket', 'codor07'),
+(10, 'codor07', 'socket'),
+(11, 'vinayak9307', 'socket'),
+(12, 'socket', 'vinayak9307');
 
 -- --------------------------------------------------------
 
@@ -49,14 +53,11 @@ INSERT INTO `friends` (`serialNum`, `person`, `friend`) VALUES
 
 CREATE TABLE `game` (
   `gameId` bigint(255) NOT NULL,
-  `isStarted` tinyint(1) NOT NULL,
   `winner` varchar(20) NOT NULL,
   `numOfPlayers` int(255) NOT NULL,
   `highScore` bigint(255) NOT NULL,
   `playerUsername` longtext NOT NULL,
   `playerScore` varchar(255) NOT NULL,
-  `ipAddress` longtext NOT NULL,
-  `port` int(255) NOT NULL,
   `Date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -64,10 +65,10 @@ CREATE TABLE `game` (
 -- Dumping data for table `game`
 --
 
-INSERT INTO `game` (`gameId`, `isStarted`, `winner`, `numOfPlayers`, `highScore`, `playerUsername`, `playerScore`, `ipAddress`, `port`, `Date`) VALUES
-(1, 0, 'prashant', 20, 200, 'prashant;vinayak', '200,400', '', 98, '2022-11-09'),
-(2, 0, 'vinayak', 30, 260, 'prashant;vinayak', '260,280', '', 45621, '2022-11-09'),
-(3, 0, 'prajdf', 25, 11, 'prashant;vinayak', '260,280', '', 45621, '2022-11-09');
+INSERT INTO `game` (`gameId`, `winner`, `numOfPlayers`, `highScore`, `playerUsername`, `playerScore`, `Date`) VALUES
+(1, 'prashant', 20, 200, 'prashant;vinayak', '200,400', '2022-11-09'),
+(2, 'vinayak', 30, 260, 'prashant;vinayak', '260,280', '2022-11-09'),
+(3, 'prajdf', 25, 11, 'prashant;vinayak', '260,280', '2022-11-09');
 
 -- --------------------------------------------------------
 
@@ -136,7 +137,6 @@ CREATE TABLE `user` (
   `username` varchar(256) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(256) NOT NULL,
-  `isOnline` tinyint(1) NOT NULL DEFAULT 0,
   `totalGamesPlayed` int(255) NOT NULL DEFAULT 0,
   `totalScore` int(255) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -145,9 +145,10 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`userId`, `name`, `username`, `email`, `password`, `isOnline`, `totalGamesPlayed`, `totalScore`) VALUES
-(1, 'Vinayak kushwaha', 'vinayak9307', 'kushwahavinayak286@gmail.com', 'kush0987', 0, 0, 0),
-(2, 'Prashant', 'codor07', 'prashant@gmail.com', 'prashant', 0, 0, 0);
+INSERT INTO `user` (`userId`, `name`, `username`, `email`, `password`, `totalGamesPlayed`, `totalScore`) VALUES
+(1, 'Vinayak kushwaha', 'vinayak9307', 'kushwahavinayak286@gmail.com', 'kush0987', 0, 0),
+(2, 'Prashant', 'codor07', 'prashant@gmail.com', 'prashant', 0, 0),
+(3, 'Saket ', 'socket', 'saket9max@gmail.com', '1234567', 0, 0);
 
 --
 -- Indexes for dumped tables
@@ -197,7 +198,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `friends`
 --
 ALTER TABLE `friends`
-  MODIFY `serialNum` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `serialNum` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `game`
@@ -221,13 +222,13 @@ ALTER TABLE `globalleader`
 -- AUTO_INCREMENT for table `request`
 --
 ALTER TABLE `request`
-  MODIFY `serialNum` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `serialNum` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userId` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `userId` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -3,6 +3,7 @@ package com.nttd.wtdoodle.Client.Game.Player;
 import com.nttd.wtdoodle.Client.Game.GameObjects.GameMessage;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
+import com.nttd.wtdoodle.ResourceLocator;
 import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -10,9 +11,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -26,6 +29,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -164,6 +168,25 @@ public class Player extends Application implements Initializable {
                 l.setLayoutX(70);
                 l.setLayoutY(447);
                 ap_main.getChildren().add(l);
+            }
+        });
+    }
+
+    public static void goToEndScreen(AnchorPane ap_main) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Stage stage = (Stage)ap_main.getScene().getWindow();
+                FXMLLoader fxmlLoader = new FXMLLoader(ResourceLocator.class.getResource("ScoreBoard.fxml"));
+                Scene scene = null;
+                try {
+                    scene = new Scene(fxmlLoader.load(), 800, 500);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                stage.setScene(scene);
+                stage.show();
             }
         });
     }

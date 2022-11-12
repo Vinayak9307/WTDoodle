@@ -2,10 +2,17 @@ package com.nttd.wtdoodle.Server;
 
 import com.nttd.wtdoodle.SharedObjects.GameSharable;
 import com.nttd.wtdoodle.SharedObjects.Message;
+import javafx.util.Pair;
 
 import java.io.*;
 import java.net.Socket;
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.comparing;
 
 public class ClientHandler implements Runnable{
 
@@ -22,7 +29,7 @@ public class ClientHandler implements Runnable{
 
     @Override
     public void run() {
-        while(socket.isConnected()){
+        while(socket != null && socket.isConnected()){
             try {
                 String message = bufferedReader.readLine();
                 if(message != null)
@@ -54,14 +61,17 @@ public class ClientHandler implements Runnable{
         String[] data = message.split(",");
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.LOGIN){
             Connection connection = databaseConnection.getConnection();
+            //Querying database to get the number of player with this username and password
             String verifyLogin ="SELECT count(1) FROM user WHERE username = '" + data[2] + "' And password = '" + data[3] + "'";
             try {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(verifyLogin);
                 while(resultSet.next()){
+                    //if a player found with only one instance the login success
                     if(resultSet.getInt(1)==1){
                         sendMessageToClient(new Message(Message.TYPE.LOGIN_SUCCESSFUL,0,""));
                         this.userName = data[2];
+                        System.out.println(userName + " logged in .");
                         server.getOnlinePlayers().add(userName);
                     }
                     else{
@@ -145,7 +155,7 @@ public class ClientHandler implements Runnable{
         }
         if(Message.TYPE.valueOf(data[0]) == Message.TYPE.REQUEST_USER_GAME_HISTORY){
             Connection connection = databaseConnection.getConnection();
-            String query = "SELECT game.gameId ,game.Date , game.winner FROM game,gameplayed WHERE gameplayed.gameId=game.gameId AND gameplayed.username='"+data[2]+"'";
+            String query = "SELECT game.gameId ,game.Date , game.winner , game.playerUsername , game.playerScore FROM game,gameplayed WHERE gameplayed.gameId=game.gameId AND gameplayed.username='"+data[2]+"'";
             try {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(query);
@@ -156,9 +166,17 @@ public class ClientHandler implements Runnable{
                     int id = resultSet.getInt("gameId");
                     Date date = resultSet.getDate("Date");
                     String winner = resultSet.getString("winner");
+                    String playerScore = "";
+                    String[] playerUsernames = resultSet.getString("playerUsername").split(";");
+                    String[] playerScores = resultSet.getString("playerScore").split(";");
+                    for(int i = 0 ; i < playerUsernames.length ; i++){
+                        if(playerUsernames[i].equals(data[2])){
+                            playerScore = playerScores[i];
+                        }
+                    }
 
                     StringBuilder sc = new StringBuilder();
-                    sc.append(id).append(" ").append(date).append(" ").append(winner);
+                    sc.append(id).append(" ").append(date).append(" ").append(winner).append(" ").append(playerScore);
                     send.append(sc.toString()).append(";");
                 }
                 sendMessageToClient(new Message(Message.TYPE.USER_GAME_HISTORY , 0 , send.toString()));
@@ -313,6 +331,88 @@ public class ClientHandler implements Runnable{
                     }
                 }
             }
+        }
+        if(Message.TYPE.valueOf(data[0]) == Message.TYPE.UPDATE_GAME_DETAIL) {
+            String[] data1 = data[2].split("@");
+            ArrayList<Pair<String , Integer>> scores = new ArrayList<>();
+            for(String d : data1){
+                String[] p = d.split(" : ");
+                Pair<String , Integer> sc = new Pair<>(p[0] , Integer.parseInt(p[1]));
+                scores.add(sc);
+            }
+            final Comparator<Pair<String, Integer>> c = reverseOrder(comparing(Pair::getValue));
+            scores.sort(c);
+            String winner = scores.get(0).getKey();
+            String highScore = String.valueOf(scores.get(0).getValue());
+            String numOfPlayers = String.valueOf(scores.size());
+            String date = LocalDate.now().toString();
+            String gameId = data[1];
+            StringBuilder playerUsernames = new StringBuilder();
+            StringBuilder playerScores = new StringBuilder();
+            for(Pair<String ,Integer> s : scores){
+                playerUsernames.append(s.getKey()).append(";");
+                playerScores.append(s.getValue()).append(";");
+            }
+
+            Connection connection = databaseConnection.getConnection();
+            String update = "INSERT INTO `game`( `gameId`,`winner`, `numOfPlayers`, `highScore`, `playerUsername`, `playerScore`, `Date`)" +
+                    " VALUES ('"+gameId+"','"+winner+"','"+numOfPlayers+"','"+highScore+"','"+playerUsernames+"','"+playerScores+"','"+date+"')";
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(update);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            for(Pair<String ,Integer> s : scores){
+                String updateQuery2 = "INSERT INTO `gameplayed`(`username`, `gameId`) VALUES ('"+s.getKey()+"','"+gameId+"')";
+                try {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate(updateQuery2);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            for(Pair<String , Integer> s : scores){
+                int totalScoreOfUser = 0;
+                int totalGamesPlayedByUser = 0;
+                String query = "SELECT `totalScore`,`totalGamesPlayed` FROM `user` WHERE `username`='"+s.getKey()+"'";
+                try {
+                    Statement statement = connection.createStatement();
+                    ResultSet resultSet = statement.executeQuery(query);
+
+                    while(resultSet.next()){
+                        totalScoreOfUser = resultSet.getInt("totalScore");
+                        totalGamesPlayedByUser = resultSet.getInt("totalGamesPlayed");
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                totalGamesPlayedByUser += 1;
+                totalScoreOfUser += s.getValue();
+                String deleteQuery = "DELETE FROM `globalleader` WHERE username='"+s.getKey()+"'";
+                try {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate(deleteQuery);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                String insertQuery = "INSERT INTO `globalleader`(`username`, `totalScore`, `date`) VALUES ('"+s.getKey()+"','"+totalScoreOfUser+"','"+date+"')";
+                try {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate(insertQuery);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
+                String updateQuery = "UPDATE `user` SET `totalGamesPlayed`="+totalGamesPlayedByUser+",`totalScore`="+totalScoreOfUser+" WHERE `username`='"+s.getKey()+"'";
+                try {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate(updateQuery);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
         }
 }
     public void sendMessageToClient(Message m){

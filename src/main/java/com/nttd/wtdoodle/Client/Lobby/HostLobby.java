@@ -37,9 +37,9 @@ public class HostLobby implements Initializable {
     public Label lb_gameCode;
     public GridPane gp_inviteList;
     public Label lb_update;
-    GameSharable joinCode;
-    PtoSBridge ptoSBridge;
-    GameServer gameServer;
+    private GameSharable joinCode;
+    private PtoSBridge ptoSBridge;
+    private GameServer gameServer;
     Thread gameServerThread;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -89,7 +89,6 @@ public class HostLobby implements Initializable {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    gameScreen.setTitle("GameScreen");
                     gameScreen.setScene(scene);
                     gameScreen.show();
                     gameServer.startNewGame();
@@ -132,7 +131,12 @@ public class HostLobby implements Initializable {
             @Override
             public void run() {
                 Label lb = (Label) anchorPane.lookup("#lb_players");
-                lb.setText(players);
+                StringBuilder playerUserName = new StringBuilder();
+                String[] playersArray = players.split(";");
+                for(String s:playersArray){
+                    playerUserName.append(s).append("\n");
+                }
+                lb.setText("JOINED PLAYERS \n" + playerUserName.toString());
             }
         });
     }

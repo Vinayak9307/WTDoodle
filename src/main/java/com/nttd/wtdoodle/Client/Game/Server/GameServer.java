@@ -1,16 +1,23 @@
 package com.nttd.wtdoodle.Client.Game.Server;
 
+import com.nttd.wtdoodle.Client.Connections.CToSBridge;
 import com.nttd.wtdoodle.Client.Game.GameObjects.GameMessage;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenColor;
 import com.nttd.wtdoodle.Client.Game.GameObjects.PenInfo;
 import com.nttd.wtdoodle.Client.Game.GameObjects.WordGenerator;
 import com.nttd.wtdoodle.Client.Lobby.HostLobby;
+import com.nttd.wtdoodle.Client.Models.User;
 import com.nttd.wtdoodle.SharedObjects.GameSharable;
+import com.nttd.wtdoodle.SharedObjects.Message;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
+
+import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.comparing;
 
 public class GameServer implements Runnable{
 
@@ -22,6 +29,7 @@ public class GameServer implements Runnable{
     boolean isStarted;          //Check if the game is started or not
     int currentDrawer = 0;      //Current Drawer index
     int incrementScoreFactorForGuesser;   //Score increasing factor for correct guess
+    int gameId;
     String playerNames;
     AnchorPane ap_main;
 
@@ -47,6 +55,7 @@ public class GameServer implements Runnable{
     int guessTime;
     int remainingTime;
     Thread gameThread;
+    String lastScore;
 
     /*Method to select new drawer by the given index*/
     private void setDrawer(int drawerIndex) {
@@ -54,6 +63,9 @@ public class GameServer implements Runnable{
         sendMessageToAll(new GameMessage(GameMessage.TYPE.SET_DRAWER,(drawerIndex+1),drawer.getPlayerName()));
     }
 
+    public int getGuessTime(){
+        return guessTime;
+    }
     /*Method to start new game*/
     public void startNewGame() {
         isStarted = true;
@@ -91,10 +103,17 @@ public class GameServer implements Runnable{
                     numRounds++;
                     currentDrawer%=maxPlayers;
                 }
-
+                sendMessageToAll(new GameMessage(GameMessage.TYPE.GAME_END,0,lastScore));
+                updateDatabase(lastScore);
             }
         });
         gameThread.start();
+    }
+
+    private void updateDatabase(String lastScore) {
+
+        CToSBridge cToSBridge = CToSBridge.getInstance();
+        cToSBridge.sendMessageToServer(new Message(Message.TYPE.UPDATE_GAME_DETAIL, gameId,lastScore));
     }
 
     private boolean everyOneIsReady() {
@@ -127,14 +146,11 @@ public class GameServer implements Runnable{
     public void sendScores(){
         int max = 10000;
         StringBuilder sc = new StringBuilder();
-        TreeMap<Integer,PlayerHandler> sorted = new TreeMap<Integer, PlayerHandler>();
         for(PlayerHandler player : players){
-            sorted.put((max - player.getScore()),player);
-        }
-        for(Map.Entry<Integer,PlayerHandler> entry : sorted.entrySet()) {
-            sc.append(entry.getValue().getPlayerName()).append(" : ").append((max-entry.getKey())).append("@");
+            sc.append(player.getPlayerName()).append(" : ").append(player.getScore()).append("@");
         }
         String score = sc.toString();
+        lastScore = sc.toString();
         sendMessageToAll(new GameMessage(GameMessage.TYPE.SET_SCORE,0,score));
     }
 
@@ -202,8 +218,15 @@ public class GameServer implements Runnable{
         incrementScoreFactorForGuesser = 200;
         incrementScoreFactorForDrawer = 50;
         isStarted = false;
+        gameId = generateNewGameId();
     }
 
+    private int generateNewGameId() {
+        Random r = new Random();
+        int low = 0;
+        int high = 65456;
+        return r.nextInt(high-low) + low;
+    }
 
 
     /*This method accepts socket connections and creates new playerHandlers*/
@@ -218,6 +241,7 @@ public class GameServer implements Runnable{
                 t.start();
                 players.add(p);
                 playerNames += p.getPlayerName();
+                playerNames += ";";
                 HostLobby.updatePlayerLabel(playerNames,ap_main);
                 sendMessageToAll(new GameMessage(GameMessage.TYPE.NEW_PLAYER_JOINED,0,playerNames));
             }

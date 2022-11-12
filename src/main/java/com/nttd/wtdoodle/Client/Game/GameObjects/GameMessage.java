@@ -20,7 +20,8 @@ public class GameMessage implements Serializable {
         CLOSE_CONNECTION,
         SET_SCORE,
         SEND_HINT,
-        READY
+        READY,
+        GAME_END
     }
     private TYPE type;
     private int id;

@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -19,6 +20,7 @@ public class GameCreator implements Initializable {
     public TextField tf_guessingTime;
     public Button btn_createGame;
     public TextField tf_numRounds;
+    public Label lb_update;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -53,14 +55,31 @@ public class GameCreator implements Initializable {
         btn_createGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(!tf_maxPlayers.getText().isEmpty() && !tf_guessingTime.getText().isEmpty() && !tf_numRounds.getText().isEmpty())
-                {
-                    gameData.setMaxPlayers(Integer.parseInt(tf_maxPlayers.getText()));
-                    gameData.setGuessingTime(Integer.parseInt(tf_guessingTime.getText()));
-                    gameData.setNumberOfRounds(Integer.parseInt(tf_numRounds.getText()));
-                    Dashboard.goToHostLobby();
-                    Stage stage = (Stage) btn_createGame.getScene().getWindow();
-                    stage.close();
+                if(!tf_maxPlayers.getText().isEmpty() && !tf_guessingTime.getText().isEmpty() && !tf_numRounds.getText().isEmpty()) {
+                    int maxPlayers = Integer.parseInt(tf_maxPlayers.getText());
+                    int guessingTime = Integer.parseInt(tf_guessingTime.getText());
+                    int numRound = Integer.parseInt(tf_numRounds.getText());
+                    if (maxPlayers > 1 && maxPlayers < 9){
+                        gameData.setMaxPlayers(maxPlayers);
+                        if(guessingTime > 20) {
+                            gameData.setGuessingTime(guessingTime);
+                            if(numRound > 0){
+                                gameData.setNumberOfRounds(numRound);
+                                Dashboard.goToHostLobby();
+                                Stage stage = (Stage) btn_createGame.getScene().getWindow();
+                                stage.close();
+                            }
+                            else {
+                                lb_update.setText("Minimum 1 round");
+                            }
+                        }
+                        else{
+                            lb_update.setText("Minimum 20 sec guessTime");
+                        }
+                    }
+                    else{
+                        lb_update.setText("Min 2 and Max 8 players");
+                    }
                 }
             }
         });
