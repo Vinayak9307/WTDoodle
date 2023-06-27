@@ -55,7 +55,7 @@ Step 6 ->Now run the server configuration.
 Step 7->Run the main configuration.
 
 If Everything went correct then u will have login and register window in front of you.
-#### Play -> Have fun -> Thank us for creating this beauty
+#### Play -> Have fun 
 
 
 
